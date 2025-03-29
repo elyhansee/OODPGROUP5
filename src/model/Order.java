@@ -37,6 +37,14 @@ public class Order {
         this.status = status;
     }
 
+    public String getShippingMethod() {
+        return shippingMethod;
+    }
+
+    public void setShippingMethod(String shippingMethod) {
+        this.shippingMethod = shippingMethod;
+    }
+
     @Override
     public String toString() {
         return String.format("OrderID: %s | CustomerID: %s | Status: %s", orderID, customerID, status);
