@@ -24,13 +24,46 @@ public class CSVImporter {
             reader = new BufferedReader(new FileReader(filePath));
             
             while ((line = reader.readLine()) != null) {
-                users.add(line.toString());
+                String[] readData = line.split(",");
+
+                if (readData.length == 6) { // 6 is the number of parameters needed
+                    String userID = readData[0];
+                    String name = readData[1];
+                    String email = readData[2];
+                    String password = readData[3];
+                    String contact = readData[4];
+                    String address = readData[5];
+                    
+                    User userInfo = switch (userID.charAt(0)) {
+                        case 'C' -> new Customer(userID, name, email, password, contact, address);
+                        case 'S' -> new Seller(userID, name, email, password, contact, address);
+                        case 'A' -> new Administrator(userID, name, email, password, contact, address);
+                        default -> {
+                            System.out.println("Invalid user type: " + userID.charAt(0));
+                            yield null;
+                        }
+                    };
+                    
+                    if (userInfo != null) {
+                        users.add(userInfo);
+                    }
+                }
             }
         }
 
         // Leaving it as general exception catching for now - Dehan 29/3
         catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        finally {
+            try {
+                reader.close();
+            } 
+            catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 
         // users.add(new Customer("C001", "Alice", "alice@example.com", "password", "12345678", "123 Street"));
