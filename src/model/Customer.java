@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -85,6 +86,17 @@ public class Customer extends User {
                 System.out.println(p);
             }
         }
+        int user_action = productMenu();
+        switch (user_action){
+            case 1:
+//                TODO: ADD TO CART
+                System.out.println("ADDED TO CART");
+                break;
+            case 2:
+                break;
+            default:
+                System.out.println("Invalid input. Please try again.");
+        }
     }
 
     private void searchProducts(List<Product> products, Scanner scanner) {
@@ -96,6 +108,13 @@ public class Customer extends User {
                 System.out.println(p);
             }
         }
+    }
+
+    private int productMenu(){
+        List<String> options = new ArrayList<>();
+        options.add("Add to cart");
+        options.add("Back");
+        return Menu.selection(options);
     }
 
     private void checkout(Scanner scanner) {
@@ -119,6 +138,11 @@ public class Customer extends User {
         // Generate order ID and clear cart (stub)
         System.out.println("Order placed successfully. Order ID: " + System.currentTimeMillis());
         cart.clear();
+    }
+
+    private void addToCart(){
+
+
     }
 
     public Cart getCart() {
