@@ -1,4 +1,5 @@
-C001,Alice,alice@example.com,password,Customer,12345678,123 Street
-S001,Bob,bob@example.com,password,Seller,87654321,456 Avenue
-A001,Charlie,charlie@example.com,password,Administrator,11223344,789 Boulevard
-S1743519794812,esther,esther@snowy.com,password,Seller,88888888,123 Snowy Street
+C001,Alice,alice@example.com,password,12345678,123 Street,1
+S001,Bob,bob@example.com,password,87654321,456 Avenue,1
+A001,Charlie,charlie@example.com,password,11223344,789 Boulevard,0
+S1743521054049,esther,esther@gmail.com,password,88888888,123 Snowy,0
+C1743521903032,snowy,snowy@dog.com,PW658,12348888,888 meow,0

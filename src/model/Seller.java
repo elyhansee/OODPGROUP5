@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class Seller extends User {
 
-    public Seller(String userID, String name, String email, String password, String contact, String address) {
-        super(userID, name, email, password, "Seller", contact, address);
+    public Seller(String userID, String name, String email, String password, String contact, String address,boolean firstLogin) {
+        super(userID, name, email, password, "Seller", contact, address,firstLogin);
     }
 
     @Override

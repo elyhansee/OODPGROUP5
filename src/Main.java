@@ -105,9 +105,9 @@ public class Main {
 
         User newUser;
         if (role.equalsIgnoreCase("Customer")) {
-            newUser = new Customer(userID, name, email, defaultPassword, contact, address);
+            newUser = new Customer(userID, name, email, defaultPassword, contact, address,true);
         } else if (role.equalsIgnoreCase("Seller")) {
-            newUser = new Seller(userID, name, email, defaultPassword, contact, address);
+            newUser = new Seller(userID, name, email, defaultPassword, contact, address,true);
         } else {
             System.out.println("Invalid role. Registration failed.");
             return;

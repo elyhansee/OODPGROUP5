@@ -20,8 +20,8 @@ public class CSVExporter {
                     .append(user.getName()).append(",")
                     .append(user.getEmail()).append(",")
                     .append(user.getPassword()).append(",")
-                    .append(user.getRole()).append(",")
                     .append(user.getContact()).append(",")
+                    .append(user.isFirstLogin() ? "1" : "0")
                     .append(user.getAddress()).append("\n");
         } catch (IOException e) {
             System.out.println("Error writing to users.csv: " + e.getMessage());
@@ -41,6 +41,7 @@ public class CSVExporter {
                 if (data.length >= 7 && data[2].equalsIgnoreCase(email)) {
                     // Replace the password (index 3)
                     data[3] = newPassword;
+                    data[6] = "0";
                     line = String.join(",", data);
                 }
 

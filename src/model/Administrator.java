@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Administrator extends User {
 
     public Administrator(String userID, String name, String email, String password, String contact, String address) {
-        super(userID, name, email, password, "Administrator", contact, address);
+        super(userID, name, email, password, "Administrator", contact, address,false);
     }
 
     @Override

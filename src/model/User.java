@@ -10,7 +10,7 @@ public abstract class User {
     protected String address;
     protected boolean firstLogin = true;
 
-    public User(String userID, String name, String email, String password, String role, String contact, String address) {
+    public User(String userID, String name, String email, String password, String role, String contact, String address,boolean firstlogin) {
         this.userID = userID;
         this.name = name;
         this.email = email;
@@ -18,6 +18,7 @@ public abstract class User {
         this.role = role;
         this.contact = contact;
         this.address = address;
+        this.firstLogin = firstlogin;
     }
 
     // Getters and Setters
