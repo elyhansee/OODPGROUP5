@@ -122,7 +122,7 @@ public class Customer extends User {
             System.out.println("Your cart is empty.");
             return;
         }
-        // Stub: simulate checkout process
+
         System.out.println("Checking out with the following items:");
         cart.displayCart();
         System.out.print("Enter shipping address (or press Enter to use your default): ");
@@ -130,15 +130,26 @@ public class Customer extends User {
         if (shipAddr.isEmpty()) {
             shipAddr = address;
         }
+
         // Choose shipping option
         System.out.println("Select Shipping Method: 1. Ship by Air  2. Express  3. Freight  4. Local");
         String shipOption = scanner.nextLine();
+
         // Payment simulation
         System.out.println("Payment authorized (simulation).");
-        // Generate order ID and clear cart (stub)
+
+        // Simulate sales and applu dynamic pricing
+        for (OrderItem item : cart.getItems()) {
+            Product product = item.getProduct();
+            product.incrementSales();        // simulate a sale
+            product.applyDynamicPricing();   // auto-adjust price based on sales
+        }
+
+        // Generate order ID and clear cart
         System.out.println("Order placed successfully. Order ID: " + System.currentTimeMillis());
         cart.clear();
     }
+
 
     private void addToCart(){
 
