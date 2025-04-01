@@ -26,17 +26,18 @@ public class CSVImporter {
             while ((line = reader.readLine()) != null) {
                 String[] readData = line.split(",");
 
-                if (readData.length == 6) { // 6 is the number of parameters needed
+                if (readData.length >= 7) { // 6 is the number of parameters needed
                     String userID = readData[0];
                     String name = readData[1];
                     String email = readData[2];
                     String password = readData[3];
                     String contact = readData[4];
                     String address = readData[5];
-                    
+                    boolean firstLogin = readData[6].equals("1");
+
                     User userInfo = switch (userID.charAt(0)) {
-                        case 'C' -> new Customer(userID, name, email, password, contact, address);
-                        case 'S' -> new Seller(userID, name, email, password, contact, address);
+                        case 'C' -> new Customer(userID, name, email, password, contact, address,firstLogin);
+                        case 'S' -> new Seller(userID, name, email, password, contact, address,firstLogin);
                         case 'A' -> new Administrator(userID, name, email, password, contact, address);
                         default -> {
                             System.out.println("Invalid user type: " + userID.charAt(0));
@@ -86,13 +87,14 @@ public class CSVImporter {
             while ((line = reader.readLine()) != null) {
                 String[] readData = line.split(",");
 
-                if (readData.length == 6) { // 6 is the number of parameters needed
+                if (readData.length == 7) { // 6 is the number of parameters needed
                     String productID = readData[0];
                     String name = readData[1];
                     String description = readData[2];
                     double price = Double.parseDouble(readData[3]);
                     int stock = Integer.parseInt(readData[4]);
                     String sellerID = readData[5];
+                    boolean firstLogin = readData[6].equals("1");
 
                     Product newProduct = new Product(productID, name, description, price, stock, sellerID);
 

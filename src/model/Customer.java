@@ -8,8 +8,8 @@ import java.util.Scanner;
 public class Customer extends User {
     private Cart cart;
 
-    public Customer(String userID, String name, String email, String password, String contact, String address) {
-        super(userID, name, email, password, "Customer", contact, address);
+    public Customer(String userID, String name, String email, String password, String contact, String address,boolean firstLogin) {
+        super(userID, name, email, password, "Customer", contact, address,firstLogin);
         this.cart = new Cart();
     }
 
