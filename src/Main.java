@@ -10,8 +10,8 @@ import java.util.List;
 
 public class Main {
     // In a complete system, these lists could be populated from CSV files.
-    public static List<User> users = CSVImporter.importUsers("users.csv");
-    public static List<Product> products = CSVImporter.importProducts("products.csv");
+    public static List<User> users = CSVImporter.importUsers("src/data/users.csv");
+    public static List<Product> products = CSVImporter.importProducts("src/data/products.csv");
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
