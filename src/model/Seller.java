@@ -50,6 +50,7 @@ public class Seller extends User {
                 case 5:
                     // Stub: set min-max pricing
                     System.out.println("Setting min-max price ranges (stub).");
+                    seller.setMinMaxPrice(products, scanner);
                     break;
                 case 6:
                     // Stub: set bundled items recommendation
@@ -120,4 +121,48 @@ public class Seller extends User {
         }
         System.out.println("Product updated: " + target);
     }
+    private void setMinMaxPrice(List<Product> products, Scanner scanner) {
+        System.out.println("All your products:");
+        for (Product p : products) {
+            if (p.getSellerID().equals(this.userID)) {
+                System.out.println(p);
+            }
+        }
+
+        // Set Minimum Price
+        System.out.print("Enter the Product ID to set a Minimum Price: ");
+        String productIdMin = scanner.nextLine();
+        Product minProduct = findMyProductById(products, productIdMin);
+        if (minProduct != null) {
+            System.out.print("Enter the new minimum price: ");
+            double minPrice = Double.parseDouble(scanner.nextLine());
+            minProduct.setMinPrice(minPrice);
+            System.out.println("Minimum price set successfully.");
+        } else {
+            System.out.println("Product not found or unauthorized.");
+        }
+
+        // Set Maximum Price
+        System.out.print("Enter the Product ID to set a Maximum Price: ");
+        String productIdMax = scanner.nextLine();
+        Product maxProduct = findMyProductById(products, productIdMax);
+        if (maxProduct != null) {
+            System.out.print("Enter the new maximum price: ");
+            double maxPrice = Double.parseDouble(scanner.nextLine());
+            maxProduct.setMaxPrice(maxPrice);
+            System.out.println("Maximum price set successfully.");
+        } else {
+            System.out.println("Product not found or unauthorized.");
+        }
+    }
+
+    private Product findMyProductById(List<Product> products, String productId) {
+        for (Product p : products) {
+            if (p.getProductID().equals(productId) && p.getSellerID().equals(this.userID)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
 }
