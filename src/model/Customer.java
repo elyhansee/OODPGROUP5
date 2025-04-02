@@ -26,7 +26,7 @@ public class Customer extends User {
         System.out.println("8. Logout");
     }
 
-    public static void handleCustomerMenu(Customer customer, Scanner scanner, List<Product> products) {
+    public static void handleCustomerMenu(Customer customer, Scanner scanner, List<Product> products, List<OrderStatus> orderStatus) {
         int choice = 0;
         while (choice != 8) {
             customer.displayMenu();
@@ -55,8 +55,7 @@ public class Customer extends User {
                     customer.checkout(scanner);
                     break;
                 case 6:
-                    // Stub: view order status
-                    System.out.println("Viewing order status (stub).");
+                    customer.viewOrderStatus(orderStatus);
                     break;
                 case 7:
                     // Stub: view past orders
@@ -190,6 +189,23 @@ public class Customer extends User {
         // Generate order ID and clear cart (stub)
         System.out.println("Order placed successfully. Order ID: " + System.currentTimeMillis());
         cart.clear();
+    }
+
+    private void viewOrderStatus(List<OrderStatus> orderStatus) {
+        if (orderStatus.isEmpty()) {
+            System.out.println("This customer has no pending orders!");
+            return;
+        }
+
+        else {
+            System.out.println("\nRecent Orders:");
+            for (OrderStatus orderStat : orderStatus) {
+                //if (orderStat.getCustomerID().equals(userID)) {
+                    System.out.println(orderStat.toString());
+                //}
+            }
+            System.out.println();
+        }
     }
 
     public Cart getCart() {
