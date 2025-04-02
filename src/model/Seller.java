@@ -27,7 +27,7 @@ public class Seller extends User {
 
     public static void handleSellerMenu(Seller seller, Scanner scanner, List<Product> products) {
         int choice = 0;
-        while (choice != 8) {
+        while (choice != 9) {
             seller.displayMenu();
             System.out.print("Enter your choice: ");
             try {
@@ -64,6 +64,9 @@ public class Seller extends User {
                     System.out.println("Generating sales report (stub).");
                     break;
                 case 8:
+                    seller.toggleListings(products);
+                    break;
+                case 9:
                     System.out.println("Logging out...");
                     break;
                 default:
@@ -168,7 +171,7 @@ public class Seller extends User {
         return null;
     }
 
-        // Toggles visibility
+    // Toggles visibility
     private void toggleListings(List<Product> products) {
 
         List<String> options = new ArrayList<>();
