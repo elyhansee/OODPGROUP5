@@ -5,12 +5,16 @@ import java.util.stream.Collectors;
 
 import util.CSVExporter;
 
+// This class controls the manipulation of products
 public class ProductController {
 
-    private static String filePath = ".\\data\\products.csv";
+    private final static String filePath = ".\\data\\products.csv";
 
     public void sellerWrite(Product products) {
         CSVExporter.updateProducts(products, filePath);
+    }
+    public void sellerNewProduct(Product product) {
+        CSVExporter.insertProducts(product, filePath);
     }
 
     // Sorts products based on the seller's ID

@@ -7,6 +7,7 @@ import model.Seller;
 import model.Administrator;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -102,6 +103,26 @@ public class CSVExporter {
         
         catch (IOException e) {
             System.out.println("Error updating visibility: " + e.getMessage());
+        }
+    }
+
+        public static void insertProducts(Product product, String filePath) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true));
+            writer.append(product.getProductID()).append(",")
+                    .append(product.getName()).append(",")
+                    .append(product.getDescription()).append(",")
+                    .append(String.valueOf(product.getPrice())).append(",")
+                    .append(String.valueOf(product.getStock())).append(",")
+                    .append(product.getSellerID()).append(",")
+                    .append(product.isActive()).append("\n");
+
+            writer.close();
+
+            System.out.println("Product Successfully Added!");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
