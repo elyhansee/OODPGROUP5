@@ -21,4 +21,9 @@ public class OrderItem {
     public String toString() {
         return String.format("Product: %s | Quantity: %d", product.getName(), quantity);
     }
+
+    public String orderSummary(){
+        double totalPrice = product.getPrice() * quantity;
+        return String.format("Product: %s %n Quantity: %d %n Total: %.2f ", product.getName(), quantity, totalPrice);
+    }
 }
