@@ -1,9 +1,12 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Seller extends User {
+
+    private static ProductController productController = new ProductController();
 
     public Seller(String userID, String name, String email, String password, String contact, String address,boolean firstLogin) {
         super(userID, name, email, password, "Seller", contact, address,firstLogin);
@@ -88,7 +91,7 @@ public class Seller extends User {
         int stock = Integer.parseInt(scanner.nextLine());
 
         // In a full implementation, product ID might be auto-generated.
-        Product newProduct = new Product("P" + System.currentTimeMillis(), name, description, price, stock, this.userID);
+        Product newProduct = new Product("P" + System.currentTimeMillis(), name, description, price, stock, this.userID, "False"); // Added default false 020425 Dehan
         products.add(newProduct);
         System.out.println("Product added: " + newProduct);
     }
@@ -165,4 +168,29 @@ public class Seller extends User {
         return null;
     }
 
+        // Toggles visibility
+    private void toggleListings(List<Product> products) {
+
+        List<String> options = new ArrayList<>();
+
+        System.out.println("\nYour Products:");
+        for (Product p : products) {
+            System.out.println(p.toStringSeller());
+            options.add(p.getProductID());
+        }
+
+        int sellerChoice = editMenu(options);
+
+        if (sellerChoice != options.size() + 1) {
+            products.get(sellerChoice - 1).toggleVisibility();
+
+            productController.sellerWrite(products.get(sellerChoice - 1));
+        }
+    }
+    
+    // Used by: toggleListings, 
+    private int editMenu(List<String> options){
+        options.add("Back");
+        return Menu.selection(options);
+    }
 }

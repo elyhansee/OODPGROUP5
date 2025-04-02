@@ -31,6 +31,7 @@ public class Menu {
                 System.out.println("Invalid input. Please enter a valid integer.");
             }
         }
+        scanner.close();
         return choice; // Return zero-based index
     }
 
@@ -48,6 +49,7 @@ public class Menu {
                 System.out.println("Invalid input. Please enter a valid integer.");
             }
         }
+        scanner.close();
         return choice;
     }
 
@@ -65,6 +67,7 @@ public class Menu {
                 System.out.println("Invalid input. Please provide a valid entry.");
             }
         }
+        scanner.close();
         return user_input;
 
 

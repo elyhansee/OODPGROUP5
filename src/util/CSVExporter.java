@@ -2,6 +2,7 @@ package util;
 
 import model.User;
 import model.Customer;
+import model.Product;
 import model.Seller;
 import model.Administrator;
 
@@ -59,6 +60,48 @@ public class CSVExporter {
             System.out.println("Password updated successfully for: " + email);
         } catch (IOException e) {
             System.out.println("Error updating password: " + e.getMessage());
+        }
+    }
+
+    // General method to update Products CSV
+    public static void updateProducts(Product product, String filePath) {
+        try {
+            List<String> lines = new ArrayList<>();
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+
+                // Assumes productID is in the 1st column (index 0)
+                if (data.length >= 7 && data[0].equals(product.getProductID())) {
+                    data[0] = product.getProductID();
+                    data[1] = product.getName();
+                    data[2] = product.getDescription();
+                    data[3] = String.valueOf(product.getPrice());
+                    data[4] = String.valueOf(product.getStock());
+                    data[5] = product.getSellerID();
+                    data[6] = product.isActive();
+
+                    line = String.join(",", data);
+                }
+
+                lines.add(line); // Keep updated or original line
+            }
+            reader.close();
+
+            // Write all lines back to the same file
+            FileWriter writer = new FileWriter(filePath);
+            for (String updatedLine : lines) {
+                writer.write(updatedLine + "\n");
+            }
+            writer.close();
+
+            System.out.println("\nVisibility Updated Successfully for Product " + product.getProductID() + "\n");
+        } 
+        
+        catch (IOException e) {
+            System.out.println("Error updating visibility: " + e.getMessage());
         }
     }
 }

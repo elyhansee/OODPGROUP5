@@ -83,7 +83,7 @@ public class Customer extends User {
         while (true) {
             System.out.println("Available Products:");
             for (Product p : products) {
-                if (p.isActive()) {
+                if (p.isActive().equals("True")) {
                     System.out.println(p);
                 }
             }
@@ -200,9 +200,9 @@ public class Customer extends User {
         else {
             System.out.println("\nRecent Orders:");
             for (OrderStatus orderStat : orderStatus) {
-                //if (orderStat.getCustomerID().equals(userID)) {
+                if (orderStat.getCustomerID().equals(userID)) {
                     System.out.println(orderStat.toString());
-                //}
+                }
             }
             System.out.println();
         }

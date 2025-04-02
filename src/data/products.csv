@@ -1,3 +1,4 @@
-P001,Keyboard,Mechanical Keyboard,79.99,50,S001,,
-P002,Mouse,Wireless Mouse,39.99,100,S001,,
+P001,Keyboard,Computer Equipment,79.99,50,S001,True
+P002,Mouse,Computer Equipment,39.99,100,S002,True,,
+P003,Headphones,Audio Equipment,49.99,20,S001,False,,
 ,,,,,,,

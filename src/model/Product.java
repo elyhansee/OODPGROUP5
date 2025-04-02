@@ -7,7 +7,7 @@ public class Product {
     private double price;
     private int stock;
     private String sellerID;
-    private boolean active = true;
+    private String active;
 
     // For dynamic pricing, you could add fields for min/max prices and an algorithm stub.
     private double minPrice;
@@ -17,13 +17,14 @@ public class Product {
     private int timeSinceLastSale = 0; // simulate time
 
 
-    public Product(String productID, String name, String description, double price, int stock, String sellerID) {
+    public Product(String productID, String name, String description, double price, int stock, String sellerID, String active) {
         this.productID = productID;
         this.name = name;
         this.description = description;
         this.price = price;
         this.stock = stock;
         this.sellerID = sellerID;
+        this.active = active;
         // For simplicity, default min and max values are set equal to the base price.
         this.minPrice = price;
         this.maxPrice = price;
@@ -48,7 +49,7 @@ public class Product {
     public String getSellerID() {
         return sellerID;
     }
-    public boolean isActive() {
+    public String isActive() {
         return active;
     }
     public void setPrice(double price) {
@@ -57,8 +58,11 @@ public class Product {
     public void setStock(int stock) {
         this.stock = stock;
     }
-    public void deactivate() {
-        this.active = false;
+    public void toggleVisibility() {
+        if (this.active.equals("True"))
+            this.active = "False";
+        else
+            this.active = "True";
     }
     public void setMinPrice(double minPrice) {
         this.minPrice = minPrice;
@@ -81,6 +85,10 @@ public class Product {
     public String toString() {
         return String.format("ID: %s | Name: %s | Price: %.2f | Stock: %d | Description: %s",
                 productID, name, price, stock, description);
+    }
+    public String toStringSeller() {
+        return String.format("ID: %s | Name: %s | Price: %.2f | Stock: %d | Description: %s | Visible: %s",
+                productID, name, price, stock, description, active);
     }
 
     public int getSalesCount() { return salesCount; }
