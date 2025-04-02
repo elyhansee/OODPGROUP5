@@ -19,7 +19,8 @@ public class Seller extends User {
         System.out.println("5. Set Min-Max Price Ranges");
         System.out.println("6. Set Bundled Items for Product");
         System.out.println("7. Generate Sales Report");
-        System.out.println("8. Logout");
+        System.out.println("8. Toggle Product Visibility");
+        System.out.println("9. Logout");
     }
 
     public static void handleSellerMenu(Seller seller, Scanner scanner, List<Product> products) {
@@ -76,51 +77,78 @@ public class Seller extends User {
         // Additional seller-specific information
     }
 
+    // TODO: Try Catch
     private void addProduct(List<Product> products, Scanner scanner) {
         System.out.println("Enter new product details:");
-        System.out.print("Product Name: ");
+
+        System.out.println("Product Name: ");
         String name = scanner.nextLine();
-        System.out.print("Description: ");
+
+        System.out.println("Description: ");
         String description = scanner.nextLine();
-        System.out.print("Price: ");
+
+        System.out.println("Price: ");
         double price = Double.parseDouble(scanner.nextLine());
-        System.out.print("Stock Quantity: ");
+
+        System.out.println("Stock Quantity: ");
         int stock = Integer.parseInt(scanner.nextLine());
 
         // In a full implementation, product ID might be auto-generated.
         Product newProduct = new Product("P" + System.currentTimeMillis(), name, description, price, stock, this.userID);
         products.add(newProduct);
-        System.out.println("Product added: " + newProduct);
+
+        productController.sellerNewProduct(newProduct);
     }
 
+    // TODO: Menu is broken. Has to fixed that then test again
     private void updateProduct(List<Product> products, Scanner scanner) {
-        System.out.print("Enter Product ID to update: ");
-        String productId = scanner.nextLine();
+        List<String> options = new ArrayList<>();
+
+        System.out.println("\nYour Products:");
+        for (Product p : products) {
+            System.out.println(p.toStringSeller());
+            options.add(p.getProductID());
+        }
+        
+        int sellerChoice = editMenu(options);
+        String productID = "";
+
+        if (sellerChoice != options.size()) {
+            productID = products.get(sellerChoice - 1).getProductID();
+        }
+
         Product target = null;
         for (Product p : products) {
-            if (p.getProductID().equals(productId) && p.getSellerID().equals(this.userID)) {
+            if (p.getProductID().equals(productID)) {
                 target = p;
                 break;
             }
         }
-        if (target == null) {
-            System.out.println("Product not found or you are not authorized to update this product.");
-            return;
+
+        // TODO: Try catch
+        System.out.println("Enter new price (or press Enter to skip): ");
+        String newPrice = scanner.nextLine();
+        if (!newPrice.isEmpty()) {
+            double newPriceDouble = Double.parseDouble(newPrice); //TODO: Format to 2 d.p.
+            target.setPrice(newPriceDouble);
         }
-        System.out.print("Enter new price (or press Enter to skip): ");
-        String priceStr = scanner.nextLine();
-        if (!priceStr.isEmpty()) {
-            double newPrice = Double.parseDouble(priceStr);
-            target.setPrice(newPrice);
+
+        System.out.println("Enter new description (or press Enter to skip): ");
+        String newDisc = scanner.nextLine();
+        if (!newDisc.isEmpty()) {
+            target.setDescription(newDisc);
         }
-        System.out.print("Enter new stock quantity (or press Enter to skip): ");
-        String stockStr = scanner.nextLine();
-        if (!stockStr.isEmpty()) {
-            int newStock = Integer.parseInt(stockStr);
-            target.setStock(newStock);
+
+        System.out.println("Enter new stock quantity (or press Enter to skip): ");
+        String newStock = scanner.nextLine();
+        if (!newStock.isEmpty()) {
+            int newStockInt = Integer.parseInt(newStock);
+            target.setStock(newStockInt);
         }
-        System.out.println("Product updated: " + target);
+
+        productController.sellerWrite(target);
     }
+    
     private void setMinMaxPrice(List<Product> products, Scanner scanner) {
         System.out.println("All your products:");
         for (Product p : products) {
