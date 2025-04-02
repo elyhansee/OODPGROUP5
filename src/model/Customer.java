@@ -2,14 +2,13 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
 
 public class Customer extends User {
     private Cart cart;
 
-    public Customer(String userID, String name, String email, String password, String contact, String address) {
-        super(userID, name, email, password, "Customer", contact, address);
+    public Customer(String userID, String name, String email, String password, String contact, String address,boolean firstLogin) {
+        super(userID, name, email, password, "Customer", contact, address,firstLogin);
         this.cart = new Cart();
     }
 
@@ -26,7 +25,7 @@ public class Customer extends User {
         System.out.println("8. Logout");
     }
 
-    public static void handleCustomerMenu(Customer customer, Scanner scanner, List<Product> products, List<OrderStatus> orderStatus) {
+    public static void handleCustomerMenu(Customer customer, Scanner scanner, List<Product> products) {
         int choice = 0;
         while (choice != 8) {
             customer.displayMenu();
@@ -55,7 +54,8 @@ public class Customer extends User {
                     customer.checkout(scanner);
                     break;
                 case 6:
-                    customer.viewOrderStatus(orderStatus);
+                    // Stub: view order status
+                    System.out.println("Viewing order status (stub).");
                     break;
                 case 7:
                     // Stub: view past orders
@@ -122,7 +122,7 @@ public class Customer extends User {
             System.out.println("Your cart is empty.");
             return;
         }
-        // Stub: simulate checkout process
+
         System.out.println("Checking out with the following items:");
         cart.displayCart();
         System.out.print("Enter shipping address (or press Enter to use your default): ");
@@ -130,31 +130,30 @@ public class Customer extends User {
         if (shipAddr.isEmpty()) {
             shipAddr = address;
         }
+
         // Choose shipping option
         System.out.println("Select Shipping Method: 1. Ship by Air  2. Express  3. Freight  4. Local");
         String shipOption = scanner.nextLine();
+
         // Payment simulation
         System.out.println("Payment authorized (simulation).");
-        // Generate order ID and clear cart (stub)
+
+        // Simulate sales and applu dynamic pricing
+        for (OrderItem item : cart.getItems()) {
+            Product product = item.getProduct();
+            product.incrementSales();        // simulate a sale
+            product.applyDynamicPricing();   // auto-adjust price based on sales
+        }
+
+        // Generate order ID and clear cart
         System.out.println("Order placed successfully. Order ID: " + System.currentTimeMillis());
         cart.clear();
     }
 
-    private void viewOrderStatus(List<OrderStatus> orderStatus) {
-        if (orderStatus.isEmpty()) {
-            System.out.println("This customer has no pending orders!");
-            return;
-        }
 
-        else {
-            System.out.println("\nRecent Orders:");
-            for (OrderStatus orderStat : orderStatus) {
-                //if (orderStat.getCustomerID().equals(userID)) {
-                    System.out.println(orderStat.toString());
-                //}
-            }
-            System.out.println();
-        }
+    private void addToCart(){
+
+
     }
 
     public Cart getCart() {
