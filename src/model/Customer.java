@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Customer extends User {
@@ -37,7 +38,7 @@ public class Customer extends User {
                 continue;
             }
 
-            switch(choice) {
+            switch (choice) {
                 case 1:
                     customer.viewProfile();
                     break;
@@ -79,22 +80,25 @@ public class Customer extends User {
     }
 
     private void browseProducts(List<Product> products) {
-        System.out.println("Available Products:");
-        for (Product p : products) {
-            if (p.isActive()) {
-                System.out.println(p);
+        while (true) {
+            System.out.println("Available Products:");
+            for (Product p : products) {
+                if (p.isActive()) {
+                    System.out.println(p);
+                }
             }
-        }
-        int user_action = productMenu();
-        switch (user_action){
-            case 1:
-//                TODO: ADD TO CART
-                System.out.println("ADDED TO CART");
-                break;
-            case 2:
-                break;
-            default:
-                System.out.println("Invalid input. Please try again.");
+            System.out.println("--------------------");
+            int user_action = productMenu();
+            switch (user_action) {
+                case 1:
+                    addToCart(products);
+                    continue;
+                case 2:
+                    break;
+                default:
+                    System.out.println("Invalid input. Please try again.");
+            }
+            break;
         }
     }
 
@@ -109,19 +113,67 @@ public class Customer extends User {
         }
     }
 
-    private int productMenu(){
+    private int productMenu() {
         List<String> options = new ArrayList<>();
         options.add("Add to cart");
         options.add("Back");
         return Menu.selection(options);
     }
 
+    private void addToCart(List<Product> products) {
+        while(true){
+            String prod_ID = Menu.textInput("Enter Product ID (Case Sensitive). Type 'cancel' to cancel");
+            if (prod_ID.equalsIgnoreCase("cancel")) {
+                break;
+            } else {
+                Optional<Product> checkProduct = products.stream()
+                        .filter(p -> p.getProductID().equals(prod_ID)).findFirst();
+                if (checkProduct.isPresent()) {
+                    while (true) {
+                        int prod_qty = Menu.numericInput("Enter product quantity. Type 0 to cancel");
+                        if (prod_qty != 0) {
+                            if (prod_qty < 0 || prod_qty > checkProduct.get().getStock()) {
+                                System.out.println("Invalid Stock Amount");
+                                continue;
+                            } else {
+                                System.out.println("Add to Cart:");
+                                System.out.println("ID: " + checkProduct.get().getProductID());
+                                System.out.println("Name: " + checkProduct.get().getName());
+                                System.out.println("Qty: " + prod_qty);
+                                System.out.println("--------------------");
+                                System.out.printf("Total Price:$%.2f %n", (prod_qty * checkProduct.get().getPrice()));
+                                while (true) {
+                                    String confirmation = Menu.textInput("Confirm Purchase? y/n");
+                                    if (confirmation.equalsIgnoreCase("y")) {
+                                        System.out.println("ADDED TO CART");
+                                        break;
+                                    } else if (confirmation.equalsIgnoreCase("n")) {
+                                        System.out.println("Purchase Cancelled");
+                                    } else {
+                                        System.out.println("Invalid input");
+                                        continue;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                } else {
+                    System.out.println("Product not found");
+                }
+                break;
+            }
+        }
+    }
+
+
     private void checkout(Scanner scanner) {
         if (cart.isEmpty()) {
             System.out.println("Your cart is empty.");
             return;
         }
-
+        // Stub: simulate checkout process
         System.out.println("Checking out with the following items:");
         cart.displayCart();
         System.out.print("Enter shipping address (or press Enter to use your default): ");
@@ -129,22 +181,12 @@ public class Customer extends User {
         if (shipAddr.isEmpty()) {
             shipAddr = address;
         }
-
         // Choose shipping option
         System.out.println("Select Shipping Method: 1. Ship by Air  2. Express  3. Freight  4. Local");
         String shipOption = scanner.nextLine();
-
         // Payment simulation
         System.out.println("Payment authorized (simulation).");
-
-        // Simulate sales and applu dynamic pricing
-        for (OrderItem item : cart.getItems()) {
-            Product product = item.getProduct();
-            product.incrementSales();        // simulate a sale
-            product.applyDynamicPricing();   // auto-adjust price based on sales
-        }
-
-        // Generate order ID and clear cart
+        // Generate order ID and clear cart (stub)
         System.out.println("Order placed successfully. Order ID: " + System.currentTimeMillis());
         cart.clear();
     }
