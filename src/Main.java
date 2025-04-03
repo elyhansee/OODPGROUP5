@@ -14,9 +14,9 @@ import java.util.List;
 
 public class Main {
     // In a complete system, these lists could be populated from CSV files.
-    public static List<User> users = CSVImporter.importUsers(".\\data\\users.csv");
-    public static List<Product> products = CSVImporter.importProducts(".\\data\\products.csv");
-    public static List<OrderStatus> orders = CSVImporter.importOrders(".\\data\\orders.csv");
+    public static List<User> users = CSVImporter.importUsers("src/data/users.csv");
+    public static List<Product> products = CSVImporter.importProducts("src/data/products.csv");
+    public static List<OrderStatus> orders = CSVImporter.importOrders("src/data/orders.csv");
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
