@@ -54,7 +54,7 @@ public class Main {
             currentUser.setPassword(newPassword);
             currentUser.setFirstLogin(false);
             // Save new pw here
-            CSVExporter.updateUserPassword(currentUser.getEmail(), newPassword, "src/data/users.csv");
+            CSVExporter.updateUserPasswordByUID(currentUser.getUserID(), newPassword, "src/data/users.csv");
         }
 
         // Dispatch to user role menus
