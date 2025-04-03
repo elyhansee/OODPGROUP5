@@ -13,6 +13,7 @@ public class ProductController {
     public void sellerWrite(Product products) {
         CSVExporter.updateProducts(products, filePath);
     }
+
     public void sellerNewProduct(Product product) {
         CSVExporter.insertProducts(product, filePath);
     }
@@ -20,8 +21,8 @@ public class ProductController {
     // Sorts products based on the seller's ID
     public List<Product> sortProducts(Seller seller, List<Product> product) {
         List<Product> sortedProducts = product.stream()
-                                            .filter(products -> (products.getSellerID().equals(seller.getUserID())))
-                                            .collect(Collectors.toList());
+                .filter(products -> (products.getSellerID().equals(seller.getUserID())))
+                .collect(Collectors.toList());
 
         return sortedProducts;
     }

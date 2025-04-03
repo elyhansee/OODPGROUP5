@@ -1,5 +1,6 @@
 
 import java.util.Scanner;
+
 import model.User;
 import model.Customer;
 import model.OrderStatus;
@@ -14,9 +15,9 @@ import java.util.List;
 
 public class Main {
     // In a complete system, these lists could be populated from CSV files.
-    public static List<User> users = CSVImporter.importUsers(".\\data\\users.csv");
-    public static List<Product> products = CSVImporter.importProducts(".\\data\\products.csv");
-    public static List<OrderStatus> orders = CSVImporter.importOrders(".\\data\\orders.csv");
+    public static List<User> users = CSVImporter.importUsers("src/data/users.csv");
+    public static List<Product> products = CSVImporter.importProducts("src/data/products.csv");
+    public static List<OrderStatus> orders = CSVImporter.importOrders("src/data/orders.csv");
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -53,18 +54,18 @@ public class Main {
             currentUser.setPassword(newPassword);
             currentUser.setFirstLogin(false);
             // Save new pw here
-            CSVExporter.updateUserPassword(currentUser.getEmail(),newPassword,"src/data/users.csv");
+            CSVExporter.updateUserPassword(currentUser.getEmail(), newPassword, "src/data/users.csv");
         }
 
         // Dispatch to user role menus
         switch (currentUser.getRole()) {
             case "Customer":
-            List<OrderStatus> itemsOrdered = new ArrayList<>();
-            for (OrderStatus ordered : orders) {
-                if (ordered.getCustomerID().equals(currentUser.getUserID())) {
-                    itemsOrdered.add(ordered);
+                List<OrderStatus> itemsOrdered = new ArrayList<>();
+                for (OrderStatus ordered : orders) {
+                    if (ordered.getCustomerID().equals(currentUser.getUserID())) {
+                        itemsOrdered.add(ordered);
+                    }
                 }
-            }
                 Customer.handleCustomerMenu((Customer) currentUser, scanner, products, itemsOrdered);
                 break;
             case "Seller":
@@ -88,6 +89,7 @@ public class Main {
         }
         return null;
     }
+
     public static void registerNewUser(List<User> users, Scanner scanner) {
         System.out.print("Enter your Name: ");
         String name = scanner.nextLine();
@@ -108,28 +110,28 @@ public class Main {
         System.out.print("Enter your Address: ");
         String address = scanner.nextLine();
 
-        String userIDPrefix = role.equalsIgnoreCase("Customer") ? "C" :"S";
+        String userIDPrefix = role.equalsIgnoreCase("Customer") ? "C" : "S";
         String userID = userIDPrefix + System.currentTimeMillis();
         String defaultPassword = generateRandomPassword();
         System.out.println("[Simulated Email] Your default password is: " + defaultPassword);
 
         User newUser;
         if (role.equalsIgnoreCase("Customer")) {
-            newUser = new Customer(userID, name, email, defaultPassword, contact, address,true);
+            newUser = new Customer(userID, name, email, defaultPassword, contact, address, true);
         } else if (role.equalsIgnoreCase("Seller")) {
-            newUser = new Seller(userID, name, email, defaultPassword, contact, address,true);
+            newUser = new Seller(userID, name, email, defaultPassword, contact, address, true);
         } else {
             System.out.println("Invalid role. Registration failed.");
             return;
         }
 
         users.add(newUser);
-        CSVExporter.appendUserToCSV(newUser,"src/data/users.csv");
+        CSVExporter.appendUserToCSV(newUser, "src/data/users.csv");
         System.out.println("Registration successful! Please log in using your email and default password.");
     }
 
     public static String generateRandomPassword() {
-        return "PW" + (int)(Math.random() * 10000);
+        return "PW" + (int) (Math.random() * 10000);
     }
 
 }

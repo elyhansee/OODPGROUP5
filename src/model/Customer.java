@@ -8,8 +8,8 @@ import java.util.Scanner;
 public class Customer extends User {
     private Cart cart;
 
-    public Customer(String userID, String name, String email, String password, String contact, String address,boolean firstLogin) {
-        super(userID, name, email, password, "Customer", contact, address,firstLogin);
+    public Customer(String userID, String name, String email, String password, String contact, String address, boolean firstLogin) {
+        super(userID, name, email, password, "Customer", contact, address, firstLogin);
         this.cart = new Cart();
     }
 
@@ -32,7 +32,7 @@ public class Customer extends User {
             customer.displayMenu();
             System.out.print("Enter your choice: ");
             try {
-                choice = Integer.parseInt(scanner.nextLine());
+                choice = Integer.parseInt(scanner.next());
             } catch (NumberFormatException ex) {
                 System.out.println("Invalid input. Please try again.");
                 continue;
@@ -121,48 +121,45 @@ public class Customer extends User {
     }
 
     private void addToCart(List<Product> products) {
-        while(true){
-            String prod_ID = Menu.textInput("Enter Product ID (Case Sensitive). Type 'cancel' to cancel");
-            if (prod_ID.equalsIgnoreCase("cancel")) {
-                break;
-            } else {
-                Optional<Product> checkProduct = products.stream()
-                        .filter(p -> p.getProductID().equals(prod_ID)).findFirst();
-                if (checkProduct.isPresent()) {
-                    while (true) {
-                        int prod_qty = Menu.numericInput("Enter product quantity. Type 0 to cancel");
-                        if (prod_qty != 0) {
-                            if (prod_qty < 0 || prod_qty > checkProduct.get().getStock()) {
-                                System.out.println("Invalid Stock Amount");
-                                continue;
-                            } else {
-                                System.out.println("Add to Cart:");
-                                System.out.println("ID: " + checkProduct.get().getProductID());
-                                System.out.println("Name: " + checkProduct.get().getName());
-                                System.out.println("Qty: " + prod_qty);
-                                System.out.println("--------------------");
-                                System.out.printf("Total Price:$%.2f %n", (prod_qty * checkProduct.get().getPrice()));
-                                while (true) {
-                                    String confirmation = Menu.textInput("Confirm Purchase? y/n");
-                                    if (confirmation.equalsIgnoreCase("y")) {
-                                        System.out.println("ADDED TO CART");
-                                        break;
-                                    } else if (confirmation.equalsIgnoreCase("n")) {
-                                        System.out.println("Purchase Cancelled");
-                                    } else {
-                                        System.out.println("Invalid input");
-                                        continue;
-                                    }
+        String prod_ID = Menu.textInput("Enter Product ID (Case Sensitive). Type 'cancel' to cancel");
+        if (prod_ID.equalsIgnoreCase("cancel")) {
+            System.out.println("Cancelled");
+        } else {
+            Optional<Product> checkProduct = products.stream()
+                    .filter(p -> p.getProductID().equals(prod_ID)).findFirst();
+            if (checkProduct.isPresent()) {
+                while (true) {
+                    int prod_qty = Menu.numericInput("Enter product quantity. Type 0 to cancel");
+                    if (prod_qty != 0) {
+                        if (prod_qty < 0 || prod_qty > checkProduct.get().getStock()) {
+                            System.out.println("Invalid Stock Amount");
+                        } else {
+                            System.out.println("Add to Cart:");
+                            System.out.println("ID: " + checkProduct.get().getProductID());
+                            System.out.println("Name: " + checkProduct.get().getName());
+                            System.out.println("Qty: " + prod_qty);
+                            System.out.println("--------------------");
+                            System.out.printf("Total Price:$%.2f %n", (prod_qty * checkProduct.get().getPrice()));
+                            while (true) {
+                                String confirmation = Menu.textInput("Confirm Purchase? y/n");
+                                if (confirmation.equalsIgnoreCase("y")) {
+                                    System.out.println("ADDED TO CART");
                                     break;
+                                } else if (confirmation.equalsIgnoreCase("n")) {
+                                    System.out.println("Purchase Cancelled");
+                                    break;
+                                } else {
+                                    System.out.println("Invalid input");
                                 }
                             }
+                            break;
                         }
+                    } else {
                         break;
                     }
-                } else {
-                    System.out.println("Product not found");
                 }
-                break;
+            } else {
+                System.out.println("Product not found");
             }
         }
     }
@@ -195,9 +192,7 @@ public class Customer extends User {
         if (orderStatus.isEmpty()) {
             System.out.println("This customer has no pending orders!");
             return;
-        }
-
-        else {
+        } else {
             System.out.println("\nRecent Orders:");
             for (OrderStatus orderStat : orderStatus) {
                 if (orderStat.getCustomerID().equals(userID)) {
