@@ -23,8 +23,8 @@ public class CSVExporter {
                     .append(user.getEmail()).append(",")
                     .append(user.getPassword()).append(",")
                     .append(user.getContact()).append(",")
-                    .append(user.isFirstLogin() ? "1" : "0")
-                    .append(user.getAddress()).append("\n");
+                    .append(user.getAddress()).append(",")
+                    .append(user.isFirstLogin() ? "1" : "0").append("\n");
         } catch (IOException e) {
             System.out.println("Error writing to users.csv: " + e.getMessage());
         }

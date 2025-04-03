@@ -1,5 +1,7 @@
 package model;
 
+import util.CSVExporter;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -36,6 +38,7 @@ public class Administrator extends User {
                     break;
                 case 2:
                     // Stub: manage user accounts
+                    admin.manageUsers(users, scanner);
                     System.out.println("Managing user accounts (stub).");
                     break;
                 case 3:
@@ -55,6 +58,65 @@ public class Administrator extends User {
         }
     }
 
+    private void manageUsers(List<User> users, Scanner scanner) {
+        while (true) {
+            System.out.println("Manage Users:");
+            System.out.println("1. Add New User");
+            System.out.println("2. Update User Contact/Address");
+            System.out.println("3. Back");
+            System.out.print("Enter choice: ");
+            int choice = Integer.parseInt(scanner.nextLine());
+            switch (choice) {
+                case 1 -> {
+                    registerNewUser(users, scanner);
+                }
+            }
+        }
+    }
+
+    public static void registerNewUser(List<User> users, Scanner scanner) {
+        System.out.print("Enter Name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter Email: ");
+        String email = scanner.nextLine();
+        String role = "";
+        while (true) {
+            System.out.print("Enter Role (Customer/Seller): ");
+            role = scanner.nextLine().trim();
+            if (role.equalsIgnoreCase("Customer") || role.equalsIgnoreCase("Seller")) {
+                break;
+            } else {
+                System.out.println("Invalid role. Please enter 'Customer' or 'Seller'.");
+            }
+        }
+        System.out.print("Enter Contact: ");
+        String contact = scanner.nextLine();
+        System.out.print("Enter Address: ");
+        String address = scanner.nextLine();
+
+        String userIDPrefix = role.equalsIgnoreCase("Customer") ? "C" : "S";
+        String userID = userIDPrefix + System.currentTimeMillis();
+        String defaultPassword = generateRandomPassword();
+        System.out.println("[Simulated Email] Your default password is: " + defaultPassword);
+
+        User newUser;
+        if (role.equalsIgnoreCase("Customer")) {
+            newUser = new Customer(userID, name, email, defaultPassword, contact, address, true);
+        } else if (role.equalsIgnoreCase("Seller")) {
+            newUser = new Seller(userID, name, email, defaultPassword, contact, address, true);
+        } else {
+            System.out.println("Invalid role. Registration failed.");
+            return;
+        }
+
+        users.add(newUser);
+        CSVExporter.appendUserToCSV(newUser, "src/data/users.csv");
+        System.out.println("Registration successful! Please log in using email and default password.");
+    }
+
+    public static String generateRandomPassword() {
+        return "PW" + (int) (Math.random() * 10000);
+    }
     private void viewProfile() {
         System.out.println("Administrator Profile:");
         System.out.println("Name: " + name);
