@@ -138,15 +138,17 @@ public class CSVImporter {
                 String[] readData = line.split(",");
 
                 //TODO: Update after esther done with checkout part
-                if (readData.length == 6) { // 3 is the number of parameters needed
+                if (readData.length == 7) { // 3 is the number of parameters needed
                     String customerID = readData[0];
                     String orderID = readData[1];
                     String productName = readData[2];
                     String shippingMethod = readData[3];
                     String shippingAddress = readData[4];
                     String status = readData[5];
+                    String date = readData[6];
+                    String sellerID = readData[7];
 
-                    OrderStatus newOrderStatus = new OrderStatus(customerID, orderID, productName, shippingMethod, shippingAddress, status);
+                    OrderStatus newOrderStatus = new OrderStatus(customerID, orderID, productName, shippingMethod, shippingAddress, status, date, sellerID);
 
                     if (newOrderStatus != null) {
                         orders.add(newOrderStatus);
