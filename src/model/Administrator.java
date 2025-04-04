@@ -11,6 +11,7 @@ public class Administrator extends User {
 
     @Override
     public void displayMenu() {
+        System.out.println();
         System.out.println("Administrator Menu:");
         System.out.println("1. View Profile");
         System.out.println("2. Manage User Accounts");

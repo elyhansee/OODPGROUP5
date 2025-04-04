@@ -7,6 +7,9 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class Customer extends User {
+
+    private static OrderController orderController = new OrderController();
+
     private Cart cart;
 
     public Customer(String userID, String name, String email, String password, String contact, String address, boolean firstLogin) {
@@ -29,6 +32,9 @@ public class Customer extends User {
     }
 
     public static void handleCustomerMenu(Customer customer, Scanner scanner, List<Product> products, List<Order> order) {
+        
+        orderController.sortOrdersCustomer(customer, order);
+        
         int choice = 0;
         while (choice != 8) {
             customer.displayMenu();
@@ -198,12 +204,12 @@ public class Customer extends User {
 
     private void viewOrderStatus(List<Order> order) {
         if (order.isEmpty()) {
-            System.out.println("This customer has no pending orders!");
+            System.out.println("You have no pending orders!");
             return;
         }
 
         else {
-            System.out.println("\nRecent Orders:");
+            System.out.println("\n== Recent Orders ==");
             for (Order o : order) {
                 if (o.getCustomerID().equals(userID)) {
                     System.out.println(o.toString());
@@ -212,6 +218,18 @@ public class Customer extends User {
             exitMenu();
         }
     }
+
+    private void viewPastOrders(List<Order> order) {
+        if (order.isEmpty()) {
+            System.out.println("You have not ordered anything before.");
+            return;
+        }
+
+        else {
+            System.out.println("\n== Past Orders ==");
+            for (Order o : order) {
+                if (o.getCustomerID().equals(userID) && o.getStatus().equals("Delivered")) {
+                    System.out.println(o.toStringPast());
                 }
             }
             exitMenu();
