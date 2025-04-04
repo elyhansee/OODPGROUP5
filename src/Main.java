@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 import model.User;
 import model.Customer;
-import model.OrderStatus;
+import model.Order;
 import model.Seller;
 import model.Administrator;
 import util.CSVExporter;
@@ -17,7 +17,7 @@ public class Main {
     // In a complete system, these lists could be populated from CSV files.
     public static List<User> users = CSVImporter.importUsers("src/data/users.csv");
     public static List<Product> products = CSVImporter.importProducts("src/data/products.csv");
-    public static List<OrderStatus> orders = CSVImporter.importOrders("src/data/orders.csv");
+    public static List<Order> orders = CSVImporter.importOrders("src/data/orders.csv");
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -60,8 +60,8 @@ public class Main {
         // Dispatch to user role menus
         switch (currentUser.getRole()) {
             case "Customer":
-                List<OrderStatus> itemsOrdered = new ArrayList<>();
-                for (OrderStatus ordered : orders) {
+                List<Order> itemsOrdered = new ArrayList<>();
+                for (Order ordered : orders) {
                     if (ordered.getCustomerID().equals(currentUser.getUserID())) {
                         itemsOrdered.add(ordered);
                     }
@@ -69,7 +69,7 @@ public class Main {
                 Customer.handleCustomerMenu((Customer) currentUser, scanner, products, itemsOrdered);
                 break;
             case "Seller":
-                Seller.handleSellerMenu((Seller) currentUser, scanner, products);
+                Seller.handleSellerMenu((Seller) currentUser, scanner, products, orders);
                 break;
             case "Administrator":
                 Administrator.handleAdminMenu((Administrator) currentUser, scanner, users, products);

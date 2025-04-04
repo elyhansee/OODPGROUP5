@@ -28,7 +28,7 @@ public class Customer extends User {
         System.out.println("8. Logout");
     }
 
-    public static void handleCustomerMenu(Customer customer, Scanner scanner, List<Product> products, List<OrderStatus> orderStatus) {
+    public static void handleCustomerMenu(Customer customer, Scanner scanner, List<Product> products, List<Order> order) {
         int choice = 0;
         while (choice != 8) {
             customer.displayMenu();
@@ -45,7 +45,7 @@ public class Customer extends User {
                     customer.viewProfile();
                     break;
                 case 2:
-                    customer.browseProducts(products);
+                    customer.browseProducts(products, scanner);
                     break;
                 case 3:
                     customer.searchProducts(products, scanner);
@@ -57,11 +57,10 @@ public class Customer extends User {
                     customer.checkout(scanner);
                     break;
                 case 6:
-                    customer.viewOrderStatus(orderStatus);
+                    customer.viewOrderStatus(order);
                     break;
                 case 7:
-                    // Stub: view past orders
-                    System.out.println("Viewing past orders (stub).");
+                    customer.viewPastOrders(order);
                     break;
                 case 8:
                     System.out.println("Logging out...");
@@ -81,7 +80,7 @@ public class Customer extends User {
         // Provide option to update details (except role or userID)
     }
 
-    private void browseProducts(List<Product> products) {
+    private void browseProducts(List<Product> products, Scanner scanner) {
         while (true) {
             System.out.println("Available Products:");
             for (Product p : products) {
@@ -93,7 +92,7 @@ public class Customer extends User {
             int user_action = productMenu();
             switch (user_action) {
                 case 1:
-                    addToCart(products);
+                    addToCart(products, scanner);
                     continue;
                 case 2:
                     break;
@@ -122,7 +121,7 @@ public class Customer extends User {
         return Menu.selection(options);
     }
 
-    private void addToCart(List<Product> products) {
+    private void addToCart(List<Product> products, Scanner scanner) {
         String prod_ID = Menu.textInput("Enter Product ID (Case Sensitive). Type 'cancel' to cancel");
         if (prod_ID.equalsIgnoreCase("cancel")) {
             System.out.println("Cancelled");
@@ -146,6 +145,9 @@ public class Customer extends User {
                                 String confirmation = Menu.textInput("Confirm Purchase? y/n");
                                 if (confirmation.equalsIgnoreCase("y")) {
                                     System.out.println("ADDED TO CART");
+
+                                    Recommendations.displayRecommendations(confirmation, products, scanner); // PLACEHOLDER 050425
+
                                     break;
                                 } else if (confirmation.equalsIgnoreCase("n")) {
                                     System.out.println("Purchase Cancelled");
@@ -194,17 +196,22 @@ public class Customer extends User {
         cart.clear();
     }
 
-    private void viewOrderStatus(List<OrderStatus> orderStatus) {
-        if (orderStatus.isEmpty()) {
+    private void viewOrderStatus(List<Order> order) {
+        if (order.isEmpty()) {
             System.out.println("This customer has no pending orders!");
             return;
         }
 
         else {
             System.out.println("\nRecent Orders:");
-            for (OrderStatus orderStat : orderStatus) {
-                if (orderStat.getCustomerID().equals(userID)) {
-                    System.out.println(orderStat.toString());
+            for (Order o : order) {
+                if (o.getCustomerID().equals(userID)) {
+                    System.out.println(o.toString());
+                }
+            }
+            exitMenu();
+        }
+    }
                 }
             }
             exitMenu();

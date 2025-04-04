@@ -6,16 +6,26 @@ import java.util.stream.Collectors;
 public class OrderController {
 
     // Sorts orders based on the seller's ID
-    public List<OrderStatus> sortOrders(Seller seller, List<OrderStatus> order) {
-        List<OrderStatus> sortedOrders = order.stream()
+    public List<Order> sortOrders(Seller seller, List<Order> order) {
+        List<Order> sortedOrders = order.stream()
                                             .filter(orders -> (orders.getSellerID().equals(seller.getUserID())))
                                             .collect(Collectors.toList());
 
         return sortedOrders;
     }
 
+    // Maybe theres a way to make it generic
+    // Sorts orders based on the customer's ID
+    public List<Order> sortOrdersCustomer(Customer customer, List<Order> order) {
+        List<Order> sortedOrders = order.stream()
+                                            .filter(orders -> (orders.getCustomerID().equals(customer.getUserID())))
+                                            .collect(Collectors.toList());
+
+        return sortedOrders;
+    }
+
     // Sorts order by date restrictions
-    public List<OrderStatus> sortOrderByDate(List<OrderStatus> orders, String startDate, String endDate) {
+    public List<Order> sortOrderByDate(List<Order> orders, String startDate, String endDate) {
         try {
             int startYear = Integer.parseInt(startDate.substring(0, 4));
             int startMonth = Integer.parseInt(startDate.substring(5, 7));
@@ -25,7 +35,7 @@ public class OrderController {
             int endMonth = Integer.parseInt(endDate.substring(5, 7));
             int endDay = Integer.parseInt(endDate.substring(8, 10));
             
-            List<OrderStatus> sortedOrders = orders.stream()
+            List<Order> sortedOrders = orders.stream()
                                                 .filter(order -> {
                                                     int orderYear = Integer.parseInt(order.getYear());
                                                     int orderMonth = Integer.parseInt(order.getMonth());
