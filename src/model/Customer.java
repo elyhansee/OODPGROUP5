@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ public class Customer extends User {
 
     @Override
     public void displayMenu() {
+        System.out.println();
         System.out.println("Customer Menu:");
         System.out.println("1. View Profile");
         System.out.println("2. Browse Products");
@@ -183,6 +185,10 @@ public class Customer extends User {
         String shipOption = scanner.nextLine();
         // Payment simulation
         System.out.println("Payment authorized (simulation).");
+
+        // @Ethan for your attention
+        System.out.println("Date Purchased: " + LocalDate.now()); // Format in 2025-04-05 for LocalDate.now()
+
         // Generate order ID and clear cart (stub)
         System.out.println("Order placed successfully. Order ID: " + System.currentTimeMillis());
         cart.clear();
@@ -192,15 +198,21 @@ public class Customer extends User {
         if (orderStatus.isEmpty()) {
             System.out.println("This customer has no pending orders!");
             return;
-        } else {
+        }
+
+        else {
             System.out.println("\nRecent Orders:");
             for (OrderStatus orderStat : orderStatus) {
                 if (orderStat.getCustomerID().equals(userID)) {
                     System.out.println(orderStat.toString());
                 }
             }
-            System.out.println();
+            exitMenu();
         }
+    }
+
+    private void exitMenu() {
+        Menu.singleSelection();
     }
 
     public Cart getCart() {
