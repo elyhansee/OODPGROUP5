@@ -67,4 +67,13 @@ public class Menu {
         }
         return user_input;
     }
+
+        // Used if the input doesnt matter
+        public static void singleSelection() {
+            Scanner scanner = new Scanner(System.in);
+    
+            System.out.println("Enter Any Button To Return");
+            scanner.nextLine();
+            return;
+        }
 }
