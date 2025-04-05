@@ -1,20 +1,26 @@
 package model;
 
+import controller.OrderController;
+import controller.ProductController;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
 public class Customer extends User {
-    private Cart cart;
 
-    public Customer(String userID, String name, String email, String password, String contact, String address,boolean firstLogin) {
-        super(userID, name, email, password, "Customer", contact, address,firstLogin);
+    private final Cart cart;
+
+    public Customer(String userID, String name, String email, String password, String contact, String address, boolean firstLogin) {
+        super(userID, name, email, password, "Customer", contact, address, firstLogin);
         this.cart = new Cart();
     }
 
     @Override
     public void displayMenu() {
+        System.out.println();
         System.out.println("Customer Menu:");
         System.out.println("1. View Profile");
         System.out.println("2. Browse Products");
@@ -26,46 +32,30 @@ public class Customer extends User {
         System.out.println("8. Logout");
     }
 
-    public static void handleCustomerMenu(Customer customer, Scanner scanner, List<Product> products, List<OrderStatus> orderStatus) {
+    public void handleCustomerMenu(Scanner scanner, List<Product> products, List<Order> order,
+                                   ProductController productController, OrderController orderController) {
+        
         int choice = 0;
         while (choice != 8) {
-            customer.displayMenu();
+            this.displayMenu();
             System.out.print("Enter your choice: ");
             try {
-                choice = Integer.parseInt(scanner.nextLine());
+                choice = Integer.parseInt(scanner.next());
             } catch (NumberFormatException ex) {
                 System.out.println("Invalid input. Please try again.");
                 continue;
             }
 
             switch (choice) {
-                case 1:
-                    customer.viewProfile();
-                    break;
-                case 2:
-                    customer.browseProducts(products);
-                    break;
-                case 3:
-                    customer.searchProducts(products, scanner);
-                    break;
-                case 4:
-                    customer.cart.displayCart();
-                    break;
-                case 5:
-                    customer.checkout(scanner);
-                    break;
-                case 6:
-                    customer.viewOrderStatus(orderStatus);
-                    break;
-                case 7:
-                    // Stub: view past orders
-                    System.out.println("Viewing past orders (stub).");
-                    break;
-                case 8:
-                    System.out.println("Logging out...");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Try again.");
+                case 1 -> this.viewProfile();
+                case 2 -> this.browseProducts(products, scanner, productController);
+                case 3 -> this.searchProducts(products, scanner, productController);
+                case 4 -> this.cart.viewCart();
+                case 5 -> this.checkout(scanner);
+                case 6 -> this.viewOrderStatus(order);
+                case 7 -> this.viewPastOrders(order);
+                case 8 -> System.out.println("Logging out...");
+                default -> System.out.println("Invalid choice. Try again.");
             }
         }
     }
@@ -79,90 +69,86 @@ public class Customer extends User {
         // Provide option to update details (except role or userID)
     }
 
-    private void browseProducts(List<Product> products) {
+    private void browseProducts(List<Product> products, Scanner scanner, ProductController productController) {
         while (true) {
+            List<Product> visibleProducts = productController.getActiveProducts(products);
             System.out.println("Available Products:");
-            for (Product p : products) {
-                if (p.isActive()) {
-                    System.out.println(p);
-                }
-            }
+            visibleProducts.forEach(System.out::println);
             System.out.println("--------------------");
             int user_action = productMenu();
-            switch (user_action) {
-                case 1:
-                    addToCart(products);
-                    continue;
-                case 2:
-                    break;
-                default:
-                    System.out.println("Invalid input. Please try again.");
+            if (user_action == 1) {
+                addToCart(products, scanner, productController);
+            } else if (user_action == 2) {
+                break;
+            } else {
+                System.out.println("Invalid input. Please try again.");
             }
-            break;
         }
     }
 
-    private void searchProducts(List<Product> products, Scanner scanner) {
-        System.out.print("Enter search keyword: ");
-        String keyword = scanner.nextLine().toLowerCase();
-        System.out.println("Search Results:");
-        for (Product p : products) {
-            if (p.getName().toLowerCase().contains(keyword) || p.getDescription().toLowerCase().contains(keyword)) {
-                System.out.println(p);
+    private void searchProducts(List<Product> products, Scanner scanner, ProductController productController) {
+        scanner.nextLine();
+        while (true) {
+            String search = Menu.textInput("Enter search keyword: ");
+            List<Product> results = productController.searchProducts(products, search);
+            System.out.println("Search Results:");
+            results.forEach(System.out::println);
+            int option = productMenu();
+            if (option == 1) {
+                addToCart(products, scanner, productController);
+            } else if (option == 2) {
+                break;
+            } else {
+                System.out.println("Invalid input. Please try again.");
             }
         }
     }
 
     private int productMenu() {
-        List<String> options = new ArrayList<>();
-        options.add("Add to cart");
-        options.add("Back");
+        List<String> options = List.of("Add to cart", "Back");
         return Menu.selection(options);
     }
 
-    private void addToCart(List<Product> products) {
-        while(true){
-            String prod_ID = Menu.textInput("Enter Product ID (Case Sensitive). Type 'cancel' to cancel");
-            if (prod_ID.equalsIgnoreCase("cancel")) {
-                break;
+    private void addToCart(List<Product> products, Scanner scanner, ProductController productController) {
+        String prod_ID = Menu.textInput("Enter Product ID (Case Sensitive). Type 'cancel' to cancel");
+
+        if (prod_ID.equalsIgnoreCase("cancel")) {
+            System.out.println("Cancelled");
+            return;
+        }
+
+        Optional<Product> addProduct = productController.getProductById(products, prod_ID);
+        if (addProduct.isEmpty()) {
+            System.out.println("Product not found");
+            return;
+        }
+
+        Product product = addProduct.get();
+        while (true) {
+            int prod_qty = Menu.numericInput("Enter product quantity. Type 0 to cancel");
+            if (prod_qty == 0) return;
+
+            if (prod_qty < 0 || prod_qty > product.getStock()) {
+                System.out.println("Invalid Stock Amount");
             } else {
-                Optional<Product> checkProduct = products.stream()
-                        .filter(p -> p.getProductID().equals(prod_ID)).findFirst();
-                if (checkProduct.isPresent()) {
-                    while (true) {
-                        int prod_qty = Menu.numericInput("Enter product quantity. Type 0 to cancel");
-                        if (prod_qty != 0) {
-                            if (prod_qty < 0 || prod_qty > checkProduct.get().getStock()) {
-                                System.out.println("Invalid Stock Amount");
-                                continue;
-                            } else {
-                                System.out.println("Add to Cart:");
-                                System.out.println("ID: " + checkProduct.get().getProductID());
-                                System.out.println("Name: " + checkProduct.get().getName());
-                                System.out.println("Qty: " + prod_qty);
-                                System.out.println("--------------------");
-                                System.out.printf("Total Price:$%.2f %n", (prod_qty * checkProduct.get().getPrice()));
-                                while (true) {
-                                    String confirmation = Menu.textInput("Confirm Purchase? y/n");
-                                    if (confirmation.equalsIgnoreCase("y")) {
-                                        System.out.println("ADDED TO CART");
-                                        break;
-                                    } else if (confirmation.equalsIgnoreCase("n")) {
-                                        System.out.println("Purchase Cancelled");
-                                    } else {
-                                        System.out.println("Invalid input");
-                                        continue;
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-                    }
+                System.out.println("Add to Cart:");
+                System.out.println("ID: " + product.getProductID());
+                System.out.println("Name: " + product.getName());
+                System.out.println("Qty: " + prod_qty);
+                System.out.println("--------------------");
+                System.out.printf("Total Price:$%.2f %n", (prod_qty * product.getPrice()));
+
+                String confirmation = Menu.textInput("Confirm Purchase? y/n");
+                if (confirmation.equalsIgnoreCase("y")) {
+                    cart.addItem(product, prod_qty);
+                    System.out.println("ADDED TO CART");
+                    break;
+                } else if (confirmation.equalsIgnoreCase("n")) {
+                    System.out.println("Purchase Cancelled");
+                    break;
                 } else {
-                    System.out.println("Product not found");
+                    System.out.println("Invalid input");
                 }
-                break;
             }
         }
     }
@@ -186,26 +172,51 @@ public class Customer extends User {
         String shipOption = scanner.nextLine();
         // Payment simulation
         System.out.println("Payment authorized (simulation).");
+
+        // @Ethan for your attention
+        System.out.println("Date Purchased: " + LocalDate.now()); // Format in 2025-04-05 for LocalDate.now()
+
         // Generate order ID and clear cart (stub)
         System.out.println("Order placed successfully. Order ID: " + System.currentTimeMillis());
-        cart.clear();
+        cart.clearCart();
     }
 
-    private void viewOrderStatus(List<OrderStatus> orderStatus) {
-        if (orderStatus.isEmpty()) {
-            System.out.println("This customer has no pending orders!");
+    private void viewOrderStatus(List<Order> order) {
+        if (order.isEmpty()) {
+            System.out.println("You have no pending orders!");
             return;
         }
 
         else {
-            System.out.println("\nRecent Orders:");
-            for (OrderStatus orderStat : orderStatus) {
-                //if (orderStat.getCustomerID().equals(userID)) {
-                    System.out.println(orderStat.toString());
-                //}
+            System.out.println("\n== Recent Orders ==");
+            for (Order o : order) {
+                if (o.getCustomerID().equals(userID)) {
+                    System.out.println(o.toString());
+                }
             }
-            System.out.println();
+            exitMenu();
         }
+    }
+
+    private void viewPastOrders(List<Order> order) {
+        if (order.isEmpty()) {
+            System.out.println("You have not ordered anything before.");
+            return;
+        }
+
+        else {
+            System.out.println("\n== Past Orders ==");
+            for (Order o : order) {
+                if (o.getCustomerID().equals(userID) && o.getStatus().equals("Delivered")) {
+                    System.out.println(o.toStringPast());
+                }
+            }
+            exitMenu();
+        }
+    }
+
+    private void exitMenu() {
+        Menu.singleSelection();
     }
 
     public Cart getCart() {
