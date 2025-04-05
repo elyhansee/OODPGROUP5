@@ -1,4 +1,4 @@
-C001,Alice,alice@example.com,password,12345678,123 Street,1
+C001,Alice,alice@example.com,12345,12345678,123 Street,0
 S001,Bob,bob@example.com,password,87654321,456 Avenue,1
 A001,Charlie,charlie@example.com,password,11223344,789 Boulevard,0
 S1743521054049,esther,esther@gmail.com,password,88888888,123 Snowy,0

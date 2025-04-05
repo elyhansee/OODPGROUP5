@@ -53,7 +53,6 @@ public class Menu {
 
     public static String textInput(String caption) {
         Scanner scanner = new Scanner(System.in);
-
         System.out.println(caption);
 
         String user_input;
@@ -68,12 +67,12 @@ public class Menu {
         return user_input;
     }
 
-        // Used if the input doesnt matter
-        public static void singleSelection() {
-            Scanner scanner = new Scanner(System.in);
-    
-            System.out.println("Enter Any Button To Return");
-            scanner.nextLine();
-            return;
-        }
+    // Used if the input doesnt matter
+    public static void singleSelection() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter Any Button To Return");
+        scanner.nextLine();
+        return;
+    }
 }
