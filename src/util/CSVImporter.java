@@ -26,7 +26,7 @@ public class CSVImporter {
             while ((line = reader.readLine()) != null) {
                 String[] readData = line.split(",");
 
-                if (readData.length >= 7) { // 6 is the number of parameters needed
+                if (readData.length >= 7) { // 7 is the number of parameters needed
                     String userID = readData[0];
                     String name = readData[1];
                     String email = readData[2];
