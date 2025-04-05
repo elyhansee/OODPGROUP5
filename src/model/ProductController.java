@@ -1,6 +1,7 @@
 package model;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import util.CSVExporter;
@@ -26,6 +27,26 @@ public class ProductController {
                                             .collect(Collectors.toList());
 
         return sortedProducts;
+    }
+
+    public List<Product> getActiveProducts(List<Product> products) {
+        return products.stream()
+                .filter(p -> p.isActive().equals("True"))
+                .collect(Collectors.toList());
+    }
+
+    public List<Product> searchProducts(List<Product> products, String keyword) {
+        String lowered = keyword.toLowerCase();
+        return products.stream()
+                .filter(p -> p.getName().toLowerCase().contains(lowered)
+                        || p.getDescription().toLowerCase().contains(lowered))
+                .collect(Collectors.toList());
+    }
+
+    public Optional<Product> getProductById(List<Product> products, String id) {
+        return products.stream()
+                .filter(p -> p.getProductID().equals(id))
+                .findFirst();
     }
 
     public List<String> getBundles() { //PLACEHOLDER 050425

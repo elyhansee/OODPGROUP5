@@ -9,9 +9,6 @@ import java.util.Scanner;
 
 public class Seller extends User {
 
-    private static ProductController productController = new ProductController();
-    private static OrderController orderController = new OrderController();
-
     public Seller(String userID, String name, String email, String password, String contact, String address, boolean firstLogin) {
         super(userID, name, email, password, "Seller", contact, address, firstLogin);
     }
@@ -31,7 +28,8 @@ public class Seller extends User {
         System.out.println("8. Logout");
     }
 
-    public static void handleSellerMenu(Seller seller, Scanner scanner, List<Product> products, List<Order> orders) {
+    public static void handleSellerMenu(Seller seller, Scanner scanner, List<Product> products, List<Order> orders
+                                        , ProductController productController, OrderController orderController) {
 
         products = productController.sortProducts(seller, products); // Sorts products to only show those for that seller 020425
         orders = orderController.sortOrders(seller, orders);
@@ -51,10 +49,10 @@ public class Seller extends User {
                     seller.viewProfile();
                     break;
                 case 2:
-                    seller.addProduct(products, scanner);
+                    seller.addProduct(products, scanner, productController);
                     break;
                 case 3:
-                    seller.updateProduct(products, scanner);
+                    seller.updateProduct(products, scanner, productController);
                     break;
                 case 4:
                     // Stub: view orders related to seller’s products
@@ -70,10 +68,10 @@ public class Seller extends User {
                     System.out.println("Setting bundled items for a product (stub).");
                     break;
                 case 7:
-                    seller.generateSalesReport(products, orders, scanner);
+                    seller.generateSalesReport(products, orders, scanner, orderController);
                     break;
                 case 8:
-                    seller.toggleListings(products);
+                    seller.toggleListings(products, productController);
                     break;
                 case 9:
                     System.out.println("Logging out...");
@@ -91,7 +89,7 @@ public class Seller extends User {
         // Additional seller-specific information
     }
 
-    private void addProduct(List<Product> products, Scanner scanner) {
+    private void addProduct(List<Product> products, Scanner scanner, ProductController productController) {
         try {
             System.out.println("Enter new product details");
 
@@ -133,7 +131,7 @@ public class Seller extends User {
         }
     }
 
-    private void updateProduct(List<Product> products, Scanner scanner) {
+    private void updateProduct(List<Product> products, Scanner scanner, ProductController productController) {
         try {
             List<String> options = new ArrayList<>();
 
@@ -262,7 +260,7 @@ public class Seller extends User {
         return null;
     }
 
-    private void generateSalesReport(List<Product> products, List<Order> orders, Scanner scanner) {
+    private void generateSalesReport(List<Product> products, List<Order> orders, Scanner scanner, OrderController orderController) {
         
         try {
             if (orders.isEmpty()) {
@@ -348,7 +346,7 @@ public class Seller extends User {
     }
 
     // Toggles visibility
-    private void toggleListings(List<Product> products) {
+    private void toggleListings(List<Product> products, ProductController productController) {
 
         List<String> options = new ArrayList<>();
 

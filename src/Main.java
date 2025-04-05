@@ -1,8 +1,8 @@
 
 import java.util.Scanner;
 
-import controller.OrderController;
-import controller.ProductController;
+import model.OrderController;
+import model.ProductController;
 import model.User;
 import model.Customer;
 import model.Order;
@@ -68,8 +68,10 @@ public class Main {
                 Customer customer = (Customer) currentUser;
                 customer.handleCustomerMenu(scanner, products, getCustomerOrders(customer), productcontroller, ordercontroller);
             }
-            case "Seller" -> Seller.handleSellerMenu((Seller) currentUser, scanner, products);
-//                Seller.handleSellerMenu((Seller) currentUser, scanner, products, orders);
+            case "Seller" -> {
+                Seller.handleSellerMenu((Seller) currentUser, scanner, products, orders, productcontroller, ordercontroller);
+                break;
+            }
             case "Administrator" ->
                     Administrator.handleAdminMenu((Administrator) currentUser, scanner, users, products);
             default -> System.out.println("Unknown user role. Exiting...");
