@@ -1,12 +1,14 @@
 package model;
 
+import controller.ProductController;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Seller extends User {
 
-    private static ProductController productController = new ProductController();
+    private static final ProductController productController = new ProductController();
 
     public Seller(String userID, String name, String email, String password, String contact, String address,boolean firstLogin) {
         super(userID, name, email, password, "Seller", contact, address,firstLogin);
@@ -187,10 +189,10 @@ public class Seller extends User {
         if (sellerChoice != options.size() + 1) {
             products.get(sellerChoice - 1).toggleVisibility();
 
-            productController.sellerWrite(products.get(sellerChoice - 1));
+            productController.updateProduct(products.get(sellerChoice - 1));
         }
     }
-    
+
     // Used by: toggleListings, 
     private int editMenu(List<String> options){
         options.add("Back");
