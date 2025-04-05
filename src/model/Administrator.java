@@ -37,7 +37,6 @@ public class Administrator extends User {
                     admin.viewProfile();
                     break;
                 case 2:
-                    // Stub: manage user accounts
                     admin.manageUsers(users, scanner);
                     System.out.println("Managing user accounts (stub).");
                     break;
