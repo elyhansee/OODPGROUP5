@@ -15,7 +15,7 @@ public class Menu {
                 System.out.println((i + 1) + ". " + options.get(i));
             }
 
-            System.out.print("Enter the number of your choice: ");
+            System.out.print("Enter your choice: ");
 
             try {
                 String input = scanner.nextLine();

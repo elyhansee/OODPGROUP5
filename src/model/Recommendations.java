@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Recommendations {
 
-    public static void displayRecommendations (String currentProductID, List<Product> product, Scanner scanner, ProductController productController) { // PLACEHOLDER
+    public static void displayRecommendations(String currentProductID, List<Product> product, Scanner scanner, ProductController productController) { // PLACEHOLDER
 
         List<String> bundles = productController.getBundles();
         List<Product> recommandedProducts = new ArrayList<>();
@@ -24,7 +24,7 @@ public class Recommendations {
 
             for (String id : splitIDs) {
                 if (!id.equals(currentProductID)) {
-                    recommandedProducts.add(productController.sortProductsReco(id, product));
+                    recommandedProducts.add(productController.sortProductsReco(id));
                 }
             }
 
@@ -40,12 +40,11 @@ public class Recommendations {
             if (choice != options.size()) {
                 System.out.println("Enter Quantity:");
                 int quantity = Integer.parseInt(scanner.nextLine());
-                Cart cart = new Cart();
-
-                cart.addItem(recommandedProducts.get(choice - 1), quantity);
+//                @Dehan For your attention.
+//                CartItem cartItem = new CartItem();
+//                cartItem.addItem(recommandedProducts.get(choice - 1), quantity);
             }
-        }
-        else {
+        } else {
             return; // No Recommanded Products
         }
 
@@ -68,7 +67,7 @@ public class Recommendations {
         // }
     }
 
-    private static int editMenu(List<String> options){
+    private static int editMenu(List<String> options) {
         options.add("Back");
         return Menu.selection(options);
     }

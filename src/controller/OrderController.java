@@ -1,15 +1,39 @@
 package controller;
 
+import model.CartItem;
 import model.Customer;
 import model.Order;
 import model.Seller;
+import view.OrderView;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderController {
+    private final List<Order> orders;
+    private final OrderView view;
 
-//    TODO: Order Checkout BY ETHAN
+    public OrderController(List<Order> orders, OrderView view) {
+        this.orders = orders;
+        this.view = view;
+    }
+
+    public void newOrder(CartItem item, Customer customer,
+                         String orderID, String purchaseDate,
+                         String shippingAddr, String shippingMethod) {
+        Order order = new Order(
+                customer.getUserID(),
+                orderID,
+                item.getProduct().getName(),
+                shippingMethod,
+                shippingAddr,
+                "Ordered",
+                purchaseDate,
+                item.getProduct().getSellerID(),
+                (item.getProduct().getPrice() * item.getQuantity())
+        );
+        orders.add(order);
+    }
 
     // Sorts orders based on the seller's ID
     public List<Order> sortOrders(Seller seller, List<Order> order) {
