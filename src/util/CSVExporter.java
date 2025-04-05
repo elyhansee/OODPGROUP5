@@ -118,7 +118,7 @@ public class CSVExporter {
                 String[] data = line.split(",");
 
                 // Assumes productID is in the 1st column (index 0)
-                if (data.length >= 7 && data[0].equals(product.getProductID())) {
+                if (data.length >= 9 && data[0].equals(product.getProductID())) {
                     data[0] = product.getProductID();
                     data[1] = product.getName();
                     data[2] = product.getDescription();
@@ -126,6 +126,8 @@ public class CSVExporter {
                     data[4] = String.valueOf(product.getStock());
                     data[5] = product.getSellerID();
                     data[6] = product.isActive();
+                    data[7]=  String.valueOf(product.getDiscountPercentage());
+                    data[8] =  product.getDiscountPercentage() == 0.0 ?"NULL": product.getDiscountExpiry();
 
                     line = String.join(",", data);
                 }
@@ -151,6 +153,8 @@ public class CSVExporter {
 
         public static void insertProducts(Product product, String filePath) {
         try {
+            String expiryStr = product.getDiscountExpiry().isEmpty() ? "NULL" : product.getDiscountExpiry();
+
             BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true));
             writer.append(product.getProductID()).append(",")
                     .append(product.getName()).append(",")
@@ -158,7 +162,9 @@ public class CSVExporter {
                     .append(String.valueOf(product.getPrice())).append(",")
                     .append(String.valueOf(product.getStock())).append(",")
                     .append(product.getSellerID()).append(",")
-                    .append(product.isActive()).append("\n");
+                    .append(product.isActive()).append(",")
+                    .append(String.valueOf(product.getDiscountPercentage())).append(",")
+                    .append(expiryStr).append("\n");
 
             writer.close();
 

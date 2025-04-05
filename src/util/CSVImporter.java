@@ -94,8 +94,9 @@ public class CSVImporter {
                     String sellerID = readData[5];
                     //boolean firstLogin = readData[6].equals("1");
                     String active = readData[6];//.equals("True");
-
-                    Product newProduct = new Product(productID, name, description, price, stock, sellerID, active);
+                    double discount = Double.parseDouble(readData[7]);
+                    String expiry = readData.length > 8 ? readData[8] : "";
+                    Product newProduct = new Product(productID, name, description, price, stock, sellerID, active, discount, expiry);
 
                     if (newProduct != null) {
                         products.add(newProduct);

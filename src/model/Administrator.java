@@ -2,6 +2,7 @@ package model;
 
 import util.CSVExporter;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
@@ -38,12 +39,12 @@ public class Administrator extends User {
                     admin.viewProfile();
                     break;
                 case 2:
+                    System.out.println("Managing user accounts.");
                     admin.manageUsers(users, scanner);
-                    System.out.println("Managing user accounts (stub).");
                     break;
                 case 3:
-                    // Stub: manage discounts or campaigns
-                    System.out.println("Managing global discounts/campaigns (stub).");
+                    System.out.println("Managing global discounts/campaigns.");
+                    admin.manageCampaigns(scanner, products);
                     break;
                 case 4:
                     System.out.println("Generating inventory and order insights.");
@@ -213,6 +214,40 @@ public class Administrator extends User {
         System.out.printf("• In Shipping: %d\n• Delivered: %d\n• Canceled/Failed: %d\n• Other: %d\n", shippingCount, deliveredCount, canceledCount, otherCount);
     }
 
+    public void manageCampaigns(Scanner scanner, List<Product> products) {
+        System.out.println("\n--- Global Discount Campaigns ---");
+        double discountPercent;int days;
+        while (true) {
+            try{
+                System.out.print("Enter discount percentage (e.g. 10 without percent sign): ");
+                discountPercent = Double.parseDouble(scanner.nextLine());
+                break;
+            } catch (Exception e) {
+                System.out.println("You did not input an integer try again.");
+            }
+        }
+        while (true) {
+            try{
+                System.out.print("Enter number of days (campaign duration): ");
+                days = Integer.parseInt(scanner.nextLine()); // For future use/logging
+                break;
+            } catch (Exception e) {
+                System.out.println("You did not input an integer try again.");
+            }
+        }
 
+        System.out.println("Applying " + discountPercent + "% discount to all products...");
+        LocalDate expiryDate = LocalDate.now().plusDays(days);
+        for (Product p : products) {
+            double originalPrice = p.getPrice();
+            double discountedPrice = originalPrice * (1 - discountPercent / 100);
+            p.setPrice(discountedPrice); // Apply new price
+            p.setDiscountExpiry(expiryDate.toString());
+            p.setDiscountPercentage(discountPercent);
+            CSVExporter.updateProducts(p, "src/data/products.csv");
+        }
+
+        System.out.println("Discount applied successfully to all products!");
+    }
 
 }
