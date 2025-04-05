@@ -1,17 +1,15 @@
 
 import java.util.Scanner;
 
-import controller.OrderController;
-import controller.ProductController;
-import model.User;
-import model.Customer;
-import model.Order;
-import model.Seller;
-import model.Administrator;
+import controller.*;
+import model.*;
 import util.CSVExporter;
 import util.CSVImporter;
-import model.Product;
 import util.Env;
+import view.CartView;
+import view.CustomerView;
+import view.OrderView;
+import view.SellerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +20,11 @@ public class Main {
     public static List<Product> products = CSVImporter.importProducts(Env.get("DATA_DIR") + "/products.csv");
     public static List<Order> orders = CSVImporter.importOrders(Env.get("DATA_DIR") + "/orders.csv");
 
-    public static final ProductController productcontroller = new ProductController();
-    public static final OrderController ordercontroller = new OrderController();
-
     public static void main(String[] args) {
+        OrderView orderView = new OrderView();
+
+        ProductController productcontroller = new ProductController(products);
+        OrderController ordercontroller = new OrderController(orders, orderView);
         Scanner scanner = new Scanner(System.in);
         System.out.println("˙⋆✮ Welcome to the E-Commerce Management System (ECMS) ✮⋆˙ ");
         while (true) {
@@ -65,11 +64,32 @@ public class Main {
         // Dispatch to user role menus
         switch (currentUser.getRole()) {
             case "Customer" -> {
-                Customer customer = (Customer) currentUser;
-                customer.handleCustomerMenu(scanner, products, getCustomerOrders(customer), productcontroller, ordercontroller);
+                List<CartItem> cartItems = new ArrayList<>();
+                CartView cartView = new CartView();
+                CartController cartController = new CartController(cartItems, cartView);
+                CustomerView customerView = new CustomerView();
+                CustomerController customerController = new CustomerController(
+                        (Customer) currentUser,
+                        productcontroller,
+                        ordercontroller,
+                        cartController,
+                        customerView
+                );
+                customerController.run();
             }
-            case "Seller" -> Seller.handleSellerMenu((Seller) currentUser, scanner, products, orders, productcontroller, ordercontroller);
-            case "Administrator" -> Administrator.handleAdminMenu((Administrator) currentUser, scanner, users, products,orders);
+            case "Seller" ->{
+                SellerView sellerView = new SellerView();
+                SellerController sellerController = new SellerController(
+                        (Seller) currentUser,
+                        productcontroller,
+                        ordercontroller,
+                        sellerView
+                );
+                sellerController.run();
+//                Seller.handleSellerMenu((Seller) currentUser, scanner, products, orders);
+            }
+            case "Administrator" ->
+                    Administrator.handleAdminMenu((Administrator) currentUser, scanner, users, products, orders);
             default -> System.out.println("Unknown user role. Exiting...");
         }
         scanner.close();
@@ -83,8 +103,6 @@ public class Main {
         }
         return null;
     }
-
-
 
     private static List<Order> getCustomerOrders(Customer customer) {
         List<Order> itemsOrdered = new ArrayList<>();

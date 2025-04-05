@@ -1,8 +1,8 @@
 package model;
 
 public class OrderItem {
-    private Product product;
-    private int quantity;
+    private final Product product;
+    private final int quantity;
 
     public OrderItem(Product product, int quantity) {
         this.product = product;
@@ -20,10 +20,5 @@ public class OrderItem {
     @Override
     public String toString() {
         return String.format("Product: %s | Quantity: %d", product.getName(), quantity);
-    }
-
-    public String orderSummary(){
-        double totalPrice = product.getPrice() * quantity;
-        return String.format("Product: %s %n Quantity: %d %n Total: %.2f ", product.getName(), quantity, totalPrice);
     }
 }
