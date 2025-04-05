@@ -68,15 +68,9 @@ public class Main {
                 Customer customer = (Customer) currentUser;
                 customer.handleCustomerMenu(scanner, products, getCustomerOrders(customer), productcontroller, ordercontroller);
             }
-            case "Seller" -> {
-                Seller.handleSellerMenu((Seller) currentUser, scanner, products, orders, productcontroller, ordercontroller);
-                break;
-            case "Administrator":
-                Administrator.handleAdminMenu((Administrator) currentUser, scanner, users, products,orders);
-                break;
-            default:
-                System.out.println("Unknown user role. Exiting...");
-                break;
+            case "Seller" -> Seller.handleSellerMenu((Seller) currentUser, scanner, products, orders, productcontroller, ordercontroller);
+            case "Administrator" -> Administrator.handleAdminMenu((Administrator) currentUser, scanner, users, products,orders);
+            default -> System.out.println("Unknown user role. Exiting...");
         }
         scanner.close();
     }
