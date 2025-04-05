@@ -1,10 +1,7 @@
 package util;
 
 import model.User;
-import model.Customer;
 import model.Product;
-import model.Seller;
-import model.Administrator;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -29,8 +26,7 @@ public class CSVExporter {
             System.out.println("Error writing to users.csv: " + e.getMessage());
         }
     }
-
-    public static void updateUserPassword(String email, String newPassword, String filePath) {
+    public static void updateUserPasswordByUID(String userId, String newPassword, String filePath) {
         try {
             List<String> lines = new ArrayList<>();
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -39,30 +35,77 @@ public class CSVExporter {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
 
-                // Assumes email is in the 3rd column (index 2)
-                if (data.length >= 7 && data[2].equalsIgnoreCase(email)) {
-                    // Replace the password (index 3)
+                if (data.length >= 7 && data[0].equals(userId)) {
                     data[3] = newPassword;
                     data[6] = "0";
                     line = String.join(",", data);
                 }
 
-                lines.add(line); // Keep updated or original line
+                lines.add(line);
             }
             reader.close();
 
-            // Write all lines back to the same file
             FileWriter writer = new FileWriter(filePath);
             for (String updatedLine : lines) {
                 writer.write(updatedLine + "\n");
             }
             writer.close();
 
-            System.out.println("Password updated successfully for: " + email);
+            System.out.println("Password updated for user ID: " + userId);
         } catch (IOException e) {
             System.out.println("Error updating password: " + e.getMessage());
         }
     }
+
+
+    public static void updateUserFieldByUID(String userID, int fieldIndex, String newValue, String filePath) {
+        if (fieldIndex == 3) {
+            System.out.println("Use the updateUserPassword method for password updates.");
+            return;
+        }
+
+        try {
+            List<String> lines = new ArrayList<>();
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+
+                // Match by user ID
+                if (data.length >= 7 && data[0].equalsIgnoreCase(userID)) {
+                    if (fieldIndex >= 0 && fieldIndex < data.length) {
+                        data[fieldIndex] = newValue;
+
+                        // If changing the role (e.g., Seller to Administrator), also update the userID prefix
+                        if (fieldIndex == 0 && !newValue.equals(userID)) {
+                            System.out.println("Note: You're replacing the entire User ID. Make sure it's intentional.");
+                        } else if (fieldIndex == 6 && (newValue.equals("0") || newValue.equals("1"))) {
+                            // ok to change login status
+                        }
+
+                        line = String.join(",", data);
+                    }
+                }
+
+                lines.add(line); // Keep updated or original line
+            }
+
+            reader.close();
+
+            // Write all lines back
+            FileWriter writer = new FileWriter(filePath);
+            for (String updatedLine : lines) {
+                writer.write(updatedLine + "\n");
+            }
+            writer.close();
+
+            System.out.println("User field updated successfully.");
+        } catch (IOException e) {
+            System.out.println("Error updating user field: " + e.getMessage());
+        }
+    }
+
 
     // General method to update Products CSV
     public static void updateProducts(Product product, String filePath) {

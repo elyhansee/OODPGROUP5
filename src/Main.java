@@ -1,6 +1,8 @@
 
 import java.util.Scanner;
 
+import controller.OrderController;
+import controller.ProductController;
 import model.User;
 import model.Customer;
 import model.Order;
@@ -9,15 +11,19 @@ import model.Administrator;
 import util.CSVExporter;
 import util.CSVImporter;
 import model.Product;
+import util.Env;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
     // In a complete system, these lists could be populated from CSV files.
-    public static List<User> users = CSVImporter.importUsers("src/data/users.csv");
-    public static List<Product> products = CSVImporter.importProducts("src/data/products.csv");
-    public static List<Order> orders = CSVImporter.importOrders("src/data/orders.csv");
+    public static List<User> users = CSVImporter.importUsers(Env.get("DATA_DIR") + "/users.csv");
+    public static List<Product> products = CSVImporter.importProducts(Env.get("DATA_DIR") + "/products.csv");
+    public static List<Order> orders = CSVImporter.importOrders(Env.get("DATA_DIR") + "/orders.csv");
+
+    public static final ProductController productcontroller = new ProductController();
+    public static final OrderController ordercontroller = new OrderController();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -46,7 +52,6 @@ public class Main {
             System.out.println("Invalid credentials. Exiting...");
             System.exit(0);
         }
-
         // Force change of default password on first login (stubbed)
         if (currentUser.isFirstLogin()) {
             System.out.print("Please change your default password: ");
@@ -54,29 +59,18 @@ public class Main {
             currentUser.setPassword(newPassword);
             currentUser.setFirstLogin(false);
             // Save new pw here
-            CSVExporter.updateUserPassword(currentUser.getEmail(), newPassword, "src/data/users.csv");
+            CSVExporter.updateUserPasswordByUID(currentUser.getUserID(), newPassword, "src/data/users.csv");
         }
 
         // Dispatch to user role menus
         switch (currentUser.getRole()) {
-            case "Customer":
-                List<Order> itemsOrdered = new ArrayList<>();
-                for (Order ordered : orders) {
-                    if (ordered.getCustomerID().equals(currentUser.getUserID())) {
-                        itemsOrdered.add(ordered);
-                    }
-                }
-                Customer.handleCustomerMenu((Customer) currentUser, scanner, products, itemsOrdered);
-                break;
-            case "Seller":
-                Seller.handleSellerMenu((Seller) currentUser, scanner, products, orders);
-                break;
-            case "Administrator":
-                Administrator.handleAdminMenu((Administrator) currentUser, scanner, users, products);
-                break;
-            default:
-                System.out.println("Unknown user role. Exiting...");
-                break;
+            case "Customer" -> {
+                Customer customer = (Customer) currentUser;
+                customer.handleCustomerMenu(scanner, products, getCustomerOrders(customer), productcontroller, ordercontroller);
+            }
+            case "Seller" -> Seller.handleSellerMenu((Seller) currentUser, scanner, products, orders, productcontroller, ordercontroller);
+            case "Administrator" -> Administrator.handleAdminMenu((Administrator) currentUser, scanner, users, products,orders);
+            default -> System.out.println("Unknown user role. Exiting...");
         }
         scanner.close();
     }
@@ -91,5 +85,15 @@ public class Main {
     }
 
 
+
+    private static List<Order> getCustomerOrders(Customer customer) {
+        List<Order> itemsOrdered = new ArrayList<>();
+        for (Order ordered : orders) {
+            if (ordered.getCustomerID().equals(customer.getUserID())) {
+                itemsOrdered.add(ordered);
+            }
+        }
+        return itemsOrdered;
+    }
 
 }
