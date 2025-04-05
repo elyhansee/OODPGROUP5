@@ -1,4 +1,6 @@
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 import controller.*;
@@ -19,6 +21,10 @@ public class Main {
     public static List<User> users = CSVImporter.importUsers(Env.get("DATA_DIR") + "/users.csv");
     public static List<Product> products = CSVImporter.importProducts(Env.get("DATA_DIR") + "/products.csv");
     public static List<Order> orders = CSVImporter.importOrders(Env.get("DATA_DIR") + "/orders.csv");
+//    public static List<User> users = CSVImporter.importUsers("src/data/users.csv");
+//    public static List<Product> products = CSVImporter.importProducts("src/data/products.csv");
+//    public static List<Order> orders = CSVImporter.importOrders("src/data/orders.csv");
+
 
     public static void main(String[] args) {
         OrderView orderView = new OrderView();
@@ -26,6 +32,7 @@ public class Main {
         ProductController productcontroller = new ProductController(products);
         OrderController ordercontroller = new OrderController(orders, orderView);
         Scanner scanner = new Scanner(System.in);
+        resetExpiredDiscounts(products);
         System.out.println("˙⋆✮ Welcome to the E-Commerce Management System (ECMS) ✮⋆˙ ");
         while (true) {
             System.out.print("Are you a new user? (yes/no): ");
@@ -113,5 +120,31 @@ public class Main {
         }
         return itemsOrdered;
     }
+
+    public static void resetExpiredDiscounts(List<Product> products) {
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        for (Product p : products) {
+            if (!p.getDiscountExpiry().equalsIgnoreCase("NULL") && p.getDiscountPercentage() > 0.0) {
+                try {
+                    LocalDate expiry = LocalDate.parse(p.getDiscountExpiry(), formatter);
+                    if (expiry.isBefore(today) || expiry.equals(today)) {
+                        double originalPrice = (p.getPrice()/(100-(p.getDiscountPercentage()))*100);
+                        p.setPrice(originalPrice);
+
+                        p.setDiscountPercentage(0.0);
+                        p.setDiscountExpiry("NULL");
+                        CSVExporter.updateProducts(p, "src/data/products.csv");
+
+                        System.out.println("Discount expired for product " + p.getProductID() + " — price restored to original.");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Invalid expiry format for product " + p.getProductID());
+                }
+            }
+        }
+    }
+
 
 }
