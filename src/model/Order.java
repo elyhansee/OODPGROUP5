@@ -46,6 +46,13 @@ public class Order {
     public void setStatus(String status) {
         this.status = status;
     }
+    
+    public String getShippingMethod() {
+        return shippingMethod;
+    }
+    public void setShippingMethod(String shippingMethod) {
+        this.shippingMethod = shippingMethod;
+    }
 
     public double getCost() {
         return cost;

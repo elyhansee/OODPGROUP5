@@ -22,7 +22,7 @@ public class Administrator extends User {
         System.out.println("5. Logout");
     }
 
-    public static void handleAdminMenu(Administrator admin, Scanner scanner, List<User> users, List<Product> products, List<OrderStatus> orders) {
+    public static void handleAdminMenu(Administrator admin, Scanner scanner, List<User> users, List<Product> products, List<Order> orders) {
         int choice = 0;
         while (choice != 5) {
             admin.displayMenu();
@@ -179,7 +179,7 @@ public class Administrator extends User {
         return false; // All good!
     }
 
-    public void generatePlatformInsights(List<OrderStatus> orders) {
+    public void generatePlatformInsights(List<Order> orders) {
         if (orders.isEmpty()) {
             System.out.println("No orders available to generate insights.");
             return;
@@ -192,7 +192,7 @@ public class Administrator extends User {
         System.out.println("˙⋆✮ Overall Inventory and Order Insights ✮⋆˙\n");
         System.out.println("Total Orders: " + totalOrders);
 
-        for (OrderStatus order : orders) {
+        for (Order order : orders) {
             String shipping = order.getShippingMethod().toLowerCase();
             if (shipping.contains("air")) airCount++;
             else if (shipping.contains("land")) landCount++;
