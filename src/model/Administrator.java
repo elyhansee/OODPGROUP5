@@ -21,7 +21,7 @@ public class Administrator extends User {
         System.out.println("5. Logout");
     }
 
-    public static void handleAdminMenu(Administrator admin, Scanner scanner, List<User> users, List<Product> products) {
+    public static void handleAdminMenu(Administrator admin, Scanner scanner, List<User> users, List<Product> products, List<OrderStatus> orders) {
         int choice = 0;
         while (choice != 5) {
             admin.displayMenu();
@@ -45,8 +45,8 @@ public class Administrator extends User {
                     System.out.println("Managing global discounts/campaigns (stub).");
                     break;
                 case 4:
-                    // Stub: generate overall inventory and order insights
-                    System.out.println("Generating inventory and order insights (stub).");
+                    System.out.println("Generating inventory and order insights.");
+                    admin.generatePlatformInsights(orders);
                     break;
                 case 5:
                     System.out.println("Logging out...");
@@ -177,6 +177,41 @@ public class Administrator extends User {
 
         return false; // All good!
     }
+
+    public void generatePlatformInsights(List<OrderStatus> orders) {
+        if (orders.isEmpty()) {
+            System.out.println("No orders available to generate insights.");
+            return;
+        }
+
+        int totalOrders = orders.size();
+        int airCount = 0, landCount = 0, seaCount = 0, localCount = 0;
+        int shippingCount = 0, deliveredCount = 0, canceledCount = 0, otherCount = 0;
+
+        System.out.println("˙⋆✮ Overall Inventory and Order Insights ✮⋆˙\n");
+        System.out.println("Total Orders: " + totalOrders);
+
+        for (OrderStatus order : orders) {
+            String shipping = order.getShippingMethod().toLowerCase();
+            if (shipping.contains("air")) airCount++;
+            else if (shipping.contains("land")) landCount++;
+            else if (shipping.contains("sea")) seaCount++;
+            else if (shipping.contains("local")) localCount++;
+
+            String status = order.getStatus().toLowerCase();
+            if (status.contains("shipping")) shippingCount++;
+            else if (status.contains("delivered")) deliveredCount++;
+            else if (status.contains("cancel") || status.contains("sinkhole") || status.contains("drowned")) canceledCount++;
+            else otherCount++;
+        }
+
+        System.out.println("\nShipping Methods:");
+        System.out.printf("• Air: %d\n• Land: %d\n• Sea: %d\n• Local: %d\n", airCount, landCount, seaCount, localCount);
+
+        System.out.println("\nOrder Status Breakdown:");
+        System.out.printf("• In Shipping: %d\n• Delivered: %d\n• Canceled/Failed: %d\n• Other: %d\n", shippingCount, deliveredCount, canceledCount, otherCount);
+    }
+
 
 
 }

@@ -25,4 +25,13 @@ public class OrderStatus {
     public String getCustomerID() {
         return customerID;
     }
+
+    public String getShippingMethod() {
+        return shippingMethod;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
 }

@@ -72,7 +72,7 @@ public class Main {
                 Seller.handleSellerMenu((Seller) currentUser, scanner, products);
                 break;
             case "Administrator":
-                Administrator.handleAdminMenu((Administrator) currentUser, scanner, users, products);
+                Administrator.handleAdminMenu((Administrator) currentUser, scanner, users, products,orders);
                 break;
             default:
                 System.out.println("Unknown user role. Exiting...");

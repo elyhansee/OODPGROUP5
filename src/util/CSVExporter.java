@@ -1,10 +1,7 @@
 package util;
 
 import model.User;
-import model.Customer;
 import model.Product;
-import model.Seller;
-import model.Administrator;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
