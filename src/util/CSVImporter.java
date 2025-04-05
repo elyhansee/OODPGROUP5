@@ -8,10 +8,10 @@ import java.util.List;
 
 import model.User;
 import model.Customer;
+import model.Order;
 import model.Seller;
 import model.Administrator;
 import model.Product;
-import model.OrderStatus;
 
 public class CSVImporter {
     public static List<User> importUsers(String filePath) {
@@ -125,8 +125,8 @@ public class CSVImporter {
     }
 
     // TO BE UPDATED 30/3 ===================================================================================================================
-    public static List<OrderStatus> importOrders(String filePath) {
-        List<OrderStatus> orders = new ArrayList<>();
+    public static List<Order> importOrders(String filePath) {
+        List<Order> orders = new ArrayList<>();
 
         BufferedReader reader = null;
         String line = "";
@@ -138,18 +138,21 @@ public class CSVImporter {
                 String[] readData = line.split(",");
 
                 //TODO: Update after esther done with checkout part
-                if (readData.length == 6) { // 3 is the number of parameters needed
+                if (readData.length == 9) { // 3 is the number of parameters needed
                     String customerID = readData[0];
                     String orderID = readData[1];
                     String productName = readData[2];
                     String shippingMethod = readData[3];
                     String shippingAddress = readData[4];
                     String status = readData[5];
+                    String date = readData[6];
+                    String sellerID = readData[7];
+                    double cost = Double.parseDouble(readData[8]);
 
-                    OrderStatus newOrderStatus = new OrderStatus(customerID, orderID, productName, shippingMethod, shippingAddress, status);
+                    Order newOrder = new Order(customerID, orderID, productName, shippingMethod, shippingAddress, status, date, sellerID, cost);
 
-                    if (newOrderStatus != null) {
-                        orders.add(newOrderStatus);
+                    if (newOrder != null) {
+                        orders.add(newOrder);
                     }
                 }
                 //TODO: Probably add an ELSE statement if values are missing. Can do for the others too
@@ -172,5 +175,35 @@ public class CSVImporter {
         }
 
         return orders;
+    }
+
+    // To get bundles
+    public static List<String> importBundles(String filePath) { // PLACEHOLDER
+        List<String> bundles = new ArrayList<>();
+
+        BufferedReader reader = null;
+        String line = "";
+
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            
+            while ((line = reader.readLine()) != null) {
+                bundles.add(line);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                reader.close();
+            } 
+            catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        return bundles;
     }
 }
