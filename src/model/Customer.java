@@ -1,5 +1,8 @@
 package model;
 
+import controller.OrderController;
+import controller.ProductController;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

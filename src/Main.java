@@ -1,8 +1,8 @@
 
 import java.util.Scanner;
 
-import model.OrderController;
-import model.ProductController;
+import controller.OrderController;
+import controller.ProductController;
 import model.User;
 import model.Customer;
 import model.Order;

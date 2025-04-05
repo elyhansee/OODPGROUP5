@@ -1,5 +1,8 @@
 package model;
 
+import controller.OrderController;
+import controller.ProductController;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;

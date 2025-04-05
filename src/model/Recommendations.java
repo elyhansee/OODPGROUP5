@@ -1,12 +1,12 @@
 package model;
 
+import controller.ProductController;
+
 import java.util.*;
 
 public class Recommendations {
 
-    private static ProductController productController = new ProductController();
-
-    public static void displayRecommendations (String currentProductID, List<Product> product, Scanner scanner) { // PLACEHOLDER
+    public static void displayRecommendations (String currentProductID, List<Product> product, Scanner scanner, ProductController productController) { // PLACEHOLDER
 
         List<String> bundles = productController.getBundles();
         List<Product> recommandedProducts = new ArrayList<>();
