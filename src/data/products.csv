@@ -1,7 +1,7 @@
-P001,Keyboard,Computer Equipment,99.99,65,S001,True,,
-P002,Mouse,Computer Equipment,39.99,100,S002,True,,
-P003,Headphones,Audio Equipment,49.99,20,S001,False,,
-P004,Adapter,Computer Equipment,49.99,20,S001,False,,
-P1743619741083,TESt,tetsets,92.0,1,S001,True
-P1743619776929,Test2,Testing Stock Validation,49.99,0,S001,True
-P1743785878789,test 4,New Desc,100.0,3,S001,False
+P001,Keyboard,Computer Equipment,89.991,65,S001,True,10.0,2025-04-16
+P002,Mouse,Computer Equipment,35.991,100,S002,True,10.0,2025-04-16
+P003,Headphones,Audio Equipment,44.991,20,S001,False,10.0,2025-04-16
+P004,Adapter,Computer Equipment,35.9928,20,S001,False,20.0,2025-07-05
+P1743619741083,TESt,tetsets,82.8,1,S001,True,10.0,2025-04-16
+P1743619776929,Test2,Testing Stock Validation,44.991,0,S001,True,10.0,2025-04-16
+P1743785878789,test 4,New Desc,90.0,3,S001,False,10.0,2025-04-16

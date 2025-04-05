@@ -16,8 +16,10 @@ public class Product {
     private int salesTarget = 10; // default target
     private int timeSinceLastSale = 0; // simulate time
 
+    private double discountPercentage=0;
+    private String discountExpiry;
 
-    public Product(String productID, String name, String description, double price, int stock, String sellerID, String active) {
+    public Product(String productID, String name, String description, double price, int stock, String sellerID, String active,double discountPercentage,String discountExpiry) {
         this.productID = productID;
         this.name = name;
         this.description = description;
@@ -28,7 +30,13 @@ public class Product {
         // For simplicity, default min and max values are set equal to the base price.
         this.minPrice = price;
         this.maxPrice = price;
+        this.discountPercentage = discountPercentage;
+        this.discountExpiry = discountExpiry;
     }
+    public Product(String productID, String name, String description, double price, int stock, String sellerID, String active) {
+        this(productID, name, description, price, stock, sellerID, active, 0.0, "NULL"); // Default discount: 0.0, no expiry
+    }
+
 
     // Getters and setters
     public String getProductID() {
@@ -83,12 +91,25 @@ public class Product {
         return maxPrice;
     }
 
+    public double getFinalPrice() {
+        double finalPrice = price;
+        if (discountPercentage > 0.0) {
+            finalPrice = price - (price * (discountPercentage / 100));
+        }
+        return finalPrice;
+    }
 
     @Override
     public String toString() {
-        return String.format("ID: %s | Name: %s | Price: %.2f | Stock: %d | Description: %s",
-                productID, name, price, stock, description);
+        if (discountPercentage > 0) {
+            return String.format("ID: %s | Name: %s | Original Price: %.2f | Discounted Price: %.2f | Stock: %d | Description: %s",
+                    productID, name, price, getFinalPrice(), stock, description);
+        } else {
+            return String.format("ID: %s | Name: %s | Price: %.2f | Stock: %d | Description: %s",
+                    productID, name, price, stock, description);
+        }
     }
+
     public String toStringSeller() {
         return String.format("ID: %s | Name: %s | Price: %.2f | Stock: %d | Description: %s | Visible: %s",
                 productID, name, price, stock, description, active);
@@ -111,5 +132,14 @@ public class Product {
             price = Math.min(maxPrice, price + 1);
         }
     }
+    public double getDiscountPercentage() { return discountPercentage; }
+    public String getDiscountExpiry() { return discountExpiry; }
 
+    public void setDiscountPercentage(double discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public void setDiscountExpiry(String discountExpiry) {
+        this.discountExpiry = discountExpiry;
+    }
 }
