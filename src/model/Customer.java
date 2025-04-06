@@ -14,39 +14,4 @@ public class Customer extends User {
     @Override
     public void displayMenu() {
     }
-
-
-    private void viewOrderStatus(List<Order> order) {
-        if (order.isEmpty()) {
-            System.out.println("You have no pending orders!");
-            return;
-        } else {
-            System.out.println("\n== Recent Orders ==");
-            for (Order o : order) {
-                if (o.getCustomerID().equals(userID)) {
-                    System.out.println(o.toString());
-                }
-            }
-            exitMenu();
-        }
-    }
-
-    private void viewPastOrders(List<Order> order) {
-        if (order.isEmpty()) {
-            System.out.println("You have not ordered anything before.");
-            return;
-        } else {
-            System.out.println("\n== Past Orders ==");
-            for (Order o : order) {
-                if (o.getCustomerID().equals(userID) && o.getStatus().equals("Delivered")) {
-                    System.out.println(o.toStringPast());
-                }
-            }
-            exitMenu();
-        }
-    }
-
-    private void exitMenu() {
-        Menu.singleSelection();
-    }
 }
