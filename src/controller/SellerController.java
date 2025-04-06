@@ -48,7 +48,8 @@ public class SellerController {
     }
 
     private void showOrders() {
-        List<Order> sellerOrders = orderController.getSellerOrders(seller.getUserID(), true);
+        List<Order> sellerOrders = orderController.getSellerOrders(seller.getUserID());
+        orderController.listOrders(sellerOrders);
         if (!sellerOrders.isEmpty()) {
             handleSellerActions();
         }
@@ -57,11 +58,12 @@ public class SellerController {
     private void updateOrderStatus() {
         String searchOrderID = view.enterOrderID();
         try {
-            Order order = orderController.getSellerOrders(seller.getUserID(), false)
+            Order order = orderController.getSellerOrders(seller.getUserID())
                     .stream().filter(o -> o.getOrderID().equals(searchOrderID)).findFirst().orElseThrow();
             String newOrderStatus = view.selectOrderStatus();
             //Set new status to order
             order.setStatus(newOrderStatus);
+            CSVExporter.updateOrder(order);
             System.out.println("Order Status Updated!");
         } catch (NoSuchElementException e) {
             System.out.println("Order not found");
@@ -228,7 +230,7 @@ public class SellerController {
 
     private void generateSalesReport(Scanner scanner) {
         try {
-            List<Order> orders = orderController.getSellerOrders(seller.getUserID(), false);
+            List<Order> orders = orderController.getSellerOrders(seller.getUserID());
             List<Product> products = productController.getStoreProducts(seller.getUserID());
             if (orders.isEmpty()) {
                 System.out.println();

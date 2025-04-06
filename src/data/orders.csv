@@ -1,9 +1,1 @@
-C001,O001,Keyboard,Air,ThisRoad 123,Delivered,2025-04-05,S001,99.99,,
-C002,O002,Mouse,Land,ThatRoad 456,Delivered,2025-04-05,S002,39.99,,
-C001,O003,Headphones,Sea,ThisRoad 123,Drowned,2025-04-05,S001,49.99,,
-C002,O004,Keyboard,Air,ThatRoad 456,Shipping,2025-04-05,S001,99.99,,
-C003,O005,Keyboard,Air,ThusRoad 123,Shipping,2025-04-05,S001,99.99,,
-C001,O003,Headphones,Sea,ThisRoad 123,Drowned,2025-04-05,S001,49.99,,
-C001,O003,Headphones,Sea,ThisRoad 123,Delivered,2025-04-05,S001,49.99,,
-C002,O007,Keyboard,Air,ThatRoad 456,Delivered,2025-04-05,S001,99.99,,
-,,,,,,,
+C001,1743952446326,Keyboard,Local,123 Street,Ordered,2025-04-06,S001,99.0

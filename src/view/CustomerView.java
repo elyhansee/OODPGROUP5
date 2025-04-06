@@ -32,7 +32,7 @@ public class CustomerView {
         System.out.println("Address: " + customer.getAddress());
     }
 
-    public int customerActions(List<String> options){
+    public int customerActions(List<String> options) {
         return Menu.selection(options);
     }
 
@@ -47,8 +47,15 @@ public class CustomerView {
         }
     }
 
-    public void displayPastOrders() {
-        System.out.println("(Past orders functionality not implemented yet.)");
+    public void displayPastOrders(List<Order> orders) {
+        if (orders.isEmpty()) {
+            System.out.println("No orders found.");
+        } else {
+            System.out.println("Order History:");
+            for (Order order : orders) {
+                System.out.println(order);
+            }
+        }
     }
 
 

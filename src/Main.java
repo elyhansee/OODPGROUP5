@@ -74,15 +74,11 @@ public class Main {
         // Dispatch to user role menus
         switch (currentUser.getRole()) {
             case "Customer" -> {
-                CartView cartView = new CartView();
-                Customer customer = (Customer) currentUser;
-                CartController cartController = new CartController(customer.cartItems, cartView);
                 CustomerView customerView = new CustomerView();
                 CustomerController customerController = new CustomerController(
                         (Customer) currentUser,
                         productcontroller,
                         ordercontroller,
-                        cartController,
                         customerView
                 );
                 customerController.run();

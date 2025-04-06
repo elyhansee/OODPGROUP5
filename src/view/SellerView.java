@@ -37,6 +37,8 @@ public class SellerView {
         System.out.println("Email: " + seller.getEmail());
     }
 
+
+
     public void displaySellerProducts(List<Product> products) {
         System.out.println("\nYour Products:");
         for (Product p : products) {

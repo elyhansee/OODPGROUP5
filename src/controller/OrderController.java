@@ -3,6 +3,7 @@ package controller;
 import model.CartItem;
 import model.Customer;
 import model.Order;
+import util.CSVExporter;
 import view.OrderView;
 
 import java.util.List;
@@ -33,20 +34,20 @@ public class OrderController {
                 (item.getProduct().getPrice() * item.getQuantity())
         );
         orders.add(order);
+        CSVExporter.insertOrder(order);
+    }
+
+    public void listOrders(List<Order> orders) {
+        view.displayOrders(orders);
     }
 
     // Sorts orders based on the seller's ID
-    public List<Order> getSellerOrders(String sellerID, boolean display) {
-        List<Order> sellerOrders = orders.stream().filter(orders1 -> orders1.getSellerID().equals(sellerID)).toList();
-        if (display) view.displayOrders(sellerOrders);
-        return sellerOrders;
+    public List<Order> getSellerOrders(String sellerID) {
+        return orders.stream().filter(order -> order.getSellerID().equals(sellerID)).toList();
     }
 
     public List<Order> getCustomerOrders(String customerID) {
-        List<Order> sortedOrders = orders.stream()
-                .filter(order -> order.getCustomerID().equals(customerID))
-                .collect(Collectors.toList());
-        return sortedOrders;
+        return orders.stream().filter(order -> order.getCustomerID().equals(customerID)).toList();
     }
 
     // Sorts order by date restrictions

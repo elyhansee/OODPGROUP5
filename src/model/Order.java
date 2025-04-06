@@ -61,6 +61,14 @@ public class Order {
         this.shippingMethod = shippingMethod;
     }
 
+    public String getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public void setShippingAddress(String shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
+
     public double getCost() {
         return cost;
     }

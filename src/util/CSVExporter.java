@@ -169,7 +169,6 @@ public class CSVExporter {
                     .append(expiryStr)
                     .append(String.valueOf(product.getMinPrice())).append(",")
                     .append(String.valueOf(product.getMaxPrice())).append("\n");
-            ;
 
             writer.close();
 
@@ -188,12 +187,52 @@ public class CSVExporter {
         }
     }
 
-    public static void insertOrder(Order order, String filePath) {
+    public static void insertOrder(Order order) {
+        //File Path simulates updating to an SQL Database
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(Env.get("DATA_DIR") + "/orders.csv"));
+            writer.append(order.getCustomerID()).append(",")
+                    .append(order.getOrderID()).append(",")
+                    .append(order.getProductName()).append(",")
+                    .append(order.getShippingMethod()).append(",")
+                    .append(order.getShippingAddress()).append(",")
+                    .append(order.getStatus()).append(",")
+                    .append((order.getYear() + "-" + order.getMonth() + "-" + order.getDay())).append(",")
+                    .append(order.getSellerID()).append(",")
+                    .append(Double.toString(order.getCost())).append("\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 
-    public static void updateOrder(Order order, String filePath) {
+    public static void updateOrder(Order order) {
+        try {
+            List<String> lines = new ArrayList<>();
+            BufferedReader reader = new BufferedReader(new FileReader(Env.get("DATA_DIR") + "/orders.csv"));
+            String line;
 
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+
+                if(data.length == 9 && data[1].equals(order.getOrderID())){
+                    data[0] = order.getCustomerID();
+                    data[1] = order.getOrderID();
+                    data[2] = order.getProductName();
+                    data[3] = order.getShippingMethod();
+                    data[4] = order.getShippingAddress();
+                    data[5] = order.getStatus();
+                    data[6] = (order.getYear() + "-" + order.getMonth() + "-" + order.getDay());
+                    data[7] = order.getSellerID();
+                    data[8] = Double.toString(order.getCost());
+                }
+                lines.add(line);
+            }
+            reader.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 }

@@ -1,6 +1,8 @@
 package controller;
 
 import model.Customer;
+import model.Order;
+import view.CartView;
 import view.CustomerView;
 
 import java.util.List;
@@ -12,12 +14,13 @@ public class CustomerController {
     private final CartController cartController;
     private final CustomerView view;
 
-    public CustomerController(Customer customer, ProductController productController, OrderController orderController, CartController cartController, CustomerView view) {
+    public CustomerController(Customer customer, ProductController productController, OrderController orderController, CustomerView view) {
         this.customer = customer;
         this.productController = productController;
         this.orderController = orderController;
-        this.cartController = cartController;
         this.view = view;
+        CartView cartView = new CartView();
+        this.cartController = new CartController(customer.cartItems, cartView);
     }
 
     public void run() {
@@ -31,18 +34,15 @@ public class CustomerController {
                 case 3 -> productController.productSearch();
                 case 4 -> cartController.displayCart();
                 case 5 -> cartController.checkout(customer, orderController);
-                case 6 -> {
-//                    List<Order> orders = orderController.getCustomerOrders(customer.getUserID());
-//                    view.displayOrders(orders);
-                }
-                case 7 -> view.displayPastOrders(); // Placeholder
+                case 6 -> showOrders();
+                case 7 -> showPastOrders();
                 case 8 -> System.out.println("Logging out...");
                 default -> System.out.println("Invalid input. Try again.");
             }
         }
     }
 
-    private void showProducts(){
+    private void showProducts() {
         productController.listProducts(productController.getActiveProducts());
         handleCustomerActions();
     }
@@ -58,35 +58,16 @@ public class CustomerController {
         }
     }
 
-//    private void viewOrderStatus(List<Order> order) {
-//        if (order.isEmpty()) {
-//            System.out.println("You have no pending orders!");
-//            return;
-//        } else {
-//            System.out.println("\n== Recent Orders ==");
-//            for (Order o : order) {
-//                if (o.getCustomerID().equals(userID)) {
-//                    System.out.println(o.toString());
-//                }
-//            }
-//            exitMenu();
-//        }
-//    }
-//
-//    private void viewPastOrders(List<Order> order) {
-//        if (order.isEmpty()) {
-//            System.out.println("You have not ordered anything before.");
-//            return;
-//        } else {
-//            System.out.println("\n== Past Orders ==");
-//            for (Order o : order) {
-//                if (o.getCustomerID().equals(userID) && o.getStatus().equals("Delivered")) {
-//                    System.out.println(o.toStringPast());
-//                }
-//            }
-//            exitMenu();
-//        }
-//    }
+    private void showOrders() {
+        List<Order> customerOrders = orderController.getCustomerOrders(customer.getUserID())
+                .stream().filter(o -> !o.getStatus().equals("Delivered")).toList();
+        view.displayOrders(customerOrders);
+    }
 
+    private void showPastOrders() {
+        List<Order> pastOrders = orderController.getCustomerOrders(customer.getUserID())
+                .stream().filter(o -> o.getStatus().equals("Delivered")).toList();
+        view.displayPastOrders(pastOrders);
+    }
 
 }
