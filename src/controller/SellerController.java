@@ -4,6 +4,7 @@ import model.Menu;
 import model.Order;
 import model.Product;
 import model.Seller;
+import util.CSVExporter;
 import view.SellerView;
 
 import java.text.DecimalFormat;
@@ -22,46 +23,20 @@ public class SellerController {
         this.view = view;
     }
 
-    public void run() {
+    public void run(Scanner scanner) {
         int choice = -1;
         while (choice != 9) {
             view.displaySellerMenu();
             choice = view.getSellerMenuChoice();
             switch (choice) {
                 case 1 -> view.viewSellerProfile(seller);
-                case 2 -> {
-//                    this.addProduct(products, scanner, productController);
-//                    TODO:@Dehan Just need to update parameters and more code cleanup
-
-                }
-                case 3 -> {
-//                    this.updateProduct(products, scanner, productController);
-//                    TODO:@Dehan Just need to update parameters and more code cleanup
-
-                }
-                case 4 -> {
-                    // Stub: view orders related to seller’s products
-                    System.out.println("Viewing orders for your products (stub).");
-                }
-                case 5 -> {
-                    // Stub: set min-max pricing
-                    System.out.println("Setting min-max price ranges (stub).");
-//                    this.setMinMaxPrice(products, scanner);
-//                    TODO:@Dehan Just need to update parameters and more code cleanup
-                }
-                case 6 -> {
-                    // Stub: set bundled items recommendation
-                    System.out.println("Setting bundled items for a product (stub).");
-//                    TODO:@Dehan Just need to update parameters and more code cleanup
-                }
-                case 7 -> {
-//                    this.generateSalesReport(products, orders, scanner, orderController);
-//                    TODO:@Dehan Just need to update parameters and more code cleanup
-                }
-                case 8 -> {
-//                    this.toggleListings(products, productController);
-//                    TODO:@Dehan Just need to update parameters and more code cleanup
-                }
+                case 2 -> addProduct(scanner);
+                case 3 -> updateProduct(scanner);
+                case 4 -> showOrders();
+                case 5 -> setMinMaxPrice(scanner);
+                case 6 -> setBundledItems(scanner);
+                case 7 -> generateSalesReport(scanner);
+                case 8 -> toggleListings();
                 case 9 -> {
                     System.out.println("Logging out...");
                 }
@@ -72,14 +47,33 @@ public class SellerController {
         }
     }
 
+    private void showOrders() {
+        List<Order> sellerOrders = orderController.getSellerOrders(seller.getUserID(), true);
+        if (!sellerOrders.isEmpty()) {
+            handleSellerActions();
+        }
+    }
 
-    private void addProduct(List<Product> products, Scanner scanner, ProductController productController) {
+    private void updateOrderStatus() {
+        String searchOrderID = view.enterOrderID();
+        try {
+            Order order = orderController.getSellerOrders(seller.getUserID(), false)
+                    .stream().filter(o -> o.getOrderID().equals(searchOrderID)).findFirst().orElseThrow();
+            String newOrderStatus = view.selectOrderStatus();
+            //Set new status to order
+            order.setStatus(newOrderStatus);
+            System.out.println("Order Status Updated!");
+        } catch (NoSuchElementException e) {
+            System.out.println("Order not found");
+        }
+
+    }
+
+    private void addProduct(Scanner scanner) {
         try {
             System.out.println("Enter new product details");
-
             System.out.println("Product Name: ");
             String name = scanner.nextLine();
-
             System.out.println("Description: ");
             String description = scanner.nextLine();
 
@@ -104,106 +98,102 @@ public class SellerController {
             }
 
             Product newProduct = new Product("P" + System.currentTimeMillis(), name, description, price, stock, this.seller.getUserID(), "False"); // Added default false 020425 Dehan
-            products.add(newProduct);
-
+            productController.addProduct(newProduct);
             productController.sellerNewProduct(newProduct);
         } catch (Exception e) {
             System.out.println("An unexpected error has occurred. Please try again.");
         }
     }
 
-    private void updateProduct(List<Product> products, Scanner scanner, ProductController productController) {
+    private void updateProduct(Scanner scanner) {
         try {
-            List<String> options = new ArrayList<>();
+            //Get All seller products
+            List<Product> products = productController.getStoreProducts(this.seller.getUserID());
+            List<String> options = new ArrayList<>(products.stream().map(Product::getProductID).toList());
+            view.displaySellerProducts(products);
+//            System.out.println("\nYour Products:");
+//            for (Product p : products) {
+//                System.out.println(p.toStringSeller());
+//                options.add(p.getProductID());
+//            }
 
-            System.out.println("\nYour Products:");
-            for (Product p : products) {
-                System.out.println(p.toStringSeller());
-                options.add(p.getProductID());
-            }
+            String selectedProductID = view.selectProductID(options);
+            if (!selectedProductID.equalsIgnoreCase("Back")) {
+//                productID = products.get(sellerChoice - 1).getProductID();
+                Product target = productController.getProductById(selectedProductID).orElseThrow();
 
-            int sellerChoice = editMenu(options);
-            String productID = "";
+                System.out.println("Enter new price (or press Enter to skip): ");
+                String newPrice = scanner.nextLine();
+                while (!newPrice.isEmpty()) {
+                    try {
+                        double newPriceDouble = Double.parseDouble(newPrice);
+                        if (newPriceDouble <= 0) {
+                            System.out.println("Invalid Input! Please enter a valid price.");
+                            System.out.println("Enter new price (or press Enter to skip): ");
+                            newPrice = scanner.nextLine();
+                        } else {
+                            DecimalFormat decFormat = new DecimalFormat("#.00");
+                            String formattedPrice = decFormat.format(newPriceDouble);
 
-            if (sellerChoice != options.size()) {
-                productID = products.get(sellerChoice - 1).getProductID();
-            }
-
-            Product target = null;
-            for (Product p : products) {
-                if (p.getProductID().equals(productID)) {
-                    target = p;
-                    break;
-                }
-            }
-
-            System.out.println("Enter new price (or press Enter to skip): ");
-            String newPrice = scanner.nextLine();
-            while (!newPrice.isEmpty()) {
-                try {
-                    double newPriceDouble = Double.parseDouble(newPrice);
-                    if (newPriceDouble <= 0) {
+                            target.setPrice(Double.parseDouble(formattedPrice));
+                            break;
+                        }
+                    } catch (NumberFormatException e) {
                         System.out.println("Invalid Input! Please enter a valid price.");
                         System.out.println("Enter new price (or press Enter to skip): ");
                         newPrice = scanner.nextLine();
-                    } else {
-                        DecimalFormat decFormat = new DecimalFormat("#.00");
-                        String formattedPrice = decFormat.format(newPriceDouble);
-
-                        target.setPrice(Double.parseDouble(formattedPrice));
-                        break;
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid Input! Please enter a valid price.");
-                    System.out.println("Enter new price (or press Enter to skip): ");
-                    newPrice = scanner.nextLine();
                 }
-            }
 
-            System.out.println("Enter new description (or press Enter to skip): ");
-            String newDisc = scanner.nextLine();
-            if (!newDisc.isEmpty()) {
-                target.setDescription(newDisc);
-            }
+                System.out.println("Enter new description (or press Enter to skip): ");
+                String newDisc = scanner.nextLine();
+                if (!newDisc.isEmpty()) {
+                    target.setDescription(newDisc);
+                }
 
-            System.out.println("Enter new stock quantity (or press Enter to skip): ");
-            String newStock = scanner.nextLine();
-            while (!newStock.isEmpty()) {
-                try {
-                    int newStockInt = Integer.parseInt(newStock);
-                    if (newStockInt < 0) {
+                System.out.println("Enter new stock quantity (or press Enter to skip): ");
+                String newStock = scanner.nextLine();
+                while (!newStock.isEmpty()) {
+                    try {
+                        int newStockInt = Integer.parseInt(newStock);
+                        if (newStockInt < 0) {
+                            System.out.println("Invalid Input! Please enter a stock amount.");
+                            System.out.println("Enter new stock quantity (or press Enter to skip): ");
+                            newStock = scanner.nextLine();
+                        } else {
+                            target.setStock(newStockInt);
+                            break;
+                        }
+                    } catch (NumberFormatException e) {
                         System.out.println("Invalid Input! Please enter a stock amount.");
                         System.out.println("Enter new stock quantity (or press Enter to skip): ");
                         newStock = scanner.nextLine();
-                    } else {
-                        target.setStock(newStockInt);
-                        break;
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid Input! Please enter a stock amount.");
-                    System.out.println("Enter new stock quantity (or press Enter to skip): ");
-                    newStock = scanner.nextLine();
                 }
+                productController.sellerWrite(target);
             }
 
-            productController.sellerWrite(target);
+        } catch (NoSuchElementException nse) {
+            System.out.println("Product Not found");
         } catch (Exception e) {
             System.out.println("An unexpected error has occurred. Please try again.");
         }
     }
 
-    private void setMinMaxPrice(List<Product> products, Scanner scanner) {
-        System.out.println("All your products:");
-        for (Product p : products) {
-            if (p.getSellerID().equals(this.seller.getUserID())) {
-                System.out.println(p);
-            }
-        }
+    private void setMinMaxPrice(Scanner scanner) {
+//        System.out.println("All your products:");
+//        for (Product p : products) {
+//            if (p.getSellerID().equals(this.seller.getUserID())) {
+//                System.out.println(p);
+//            }
+//        }
+        List<Product> products = productController.getStoreProducts(this.seller.getUserID());
+        productController.listProducts(products);
 
         // Set Minimum Price
         System.out.print("Enter the Product ID to set a Minimum Price: ");
         String productIdMin = scanner.nextLine();
-        Product minProduct = findMyProductById(products, productIdMin);
+        Product minProduct = products.stream().filter(p -> p.getProductID().equals(productIdMin)).findAny().orElse(null); //findMyProductById(products, productIdMin);
         if (minProduct != null) {
             System.out.print("Enter the new minimum price: ");
             double minPrice = Double.parseDouble(scanner.nextLine());
@@ -236,9 +226,10 @@ public class SellerController {
         return null;
     }
 
-    private void generateSalesReport(List<Product> products, List<Order> orders, Scanner scanner, OrderController orderController) {
-
+    private void generateSalesReport(Scanner scanner) {
         try {
+            List<Order> orders = orderController.getSellerOrders(seller.getUserID(), false);
+            List<Product> products = productController.getStoreProducts(seller.getUserID());
             if (orders.isEmpty()) {
                 System.out.println();
                 System.out.println("== Your Sales Report ==");
@@ -319,21 +310,13 @@ public class SellerController {
     }
 
     // Toggles visibility
-    private void toggleListings(List<Product> products, ProductController productController) {
-
-        List<String> options = new ArrayList<>();
-
-        System.out.println("\nYour Products:");
-        for (Product p : products) {
-            System.out.println(p.toStringSeller());
-            options.add(p.getProductID());
-        }
-
+    private void toggleListings() {
+        List<Product> products = productController.getStoreProducts(seller.getUserID());
+        List<String> options = products.stream().map(Product::getProductID).toList();
+        view.displaySellerProducts(products);
         int sellerChoice = editMenu(options);
-
         if (sellerChoice != options.size()) {
             products.get(sellerChoice - 1).toggleVisibility();
-
             productController.sellerWrite(products.get(sellerChoice - 1));
         }
     }
@@ -346,5 +329,60 @@ public class SellerController {
 
     private void exitMenu() {
         Menu.singleSelection();
+    }
+
+    public void setBundledItems(Scanner scanner) {
+        List<Product> products = productController.getStoreProducts(seller.getUserID());
+        List<String> productIds = products.stream().map(Product::getProductID).toList();
+        view.displaySellerProducts(products);
+//        for (Product p : products) {
+//            if (p.getSellerID().equals(this.seller.getUserID())) {
+//                System.out.println(p.toStringSeller());
+//                productIds.add(p.getProductID());
+//            }
+//        }
+
+        System.out.print("Enter Product ID to set recommendations for: ");
+        String baseProductId = scanner.nextLine();
+
+        Product baseProduct = findMyProductById(products, baseProductId);
+        if (baseProduct == null) {
+            System.out.println("Invalid product ID.");
+            return;
+        }
+
+        List<String> bundle = new ArrayList<>();
+        bundle.add(baseProductId);
+
+        while (true) {
+            System.out.print("Enter related Product ID to add (or 'done' to finish): ");
+            String relatedId = scanner.nextLine();
+            if (relatedId.equalsIgnoreCase("done")) break;
+
+            if (!relatedId.equals(baseProductId) && productIds.contains(relatedId)) {
+                bundle.add(relatedId);
+            } else {
+                System.out.println("Invalid ID or duplicate.");
+            }
+        }
+
+        if (bundle.size() > 1) {
+            CSVExporter.appendBundle(bundle, ".\\data\\bundles.csv"); // Or Env.get("DATA_DIR")
+            System.out.println("Bundled recommendation saved.");
+        } else {
+            System.out.println("Bundle must include at least one additional product.");
+        }
+    }
+
+
+    private void handleSellerActions() {
+        List<String> options = List.of("Update Order Status", "Back");
+        int action = view.sellerActions(options);
+        switch (action) {
+            case 1 -> updateOrderStatus();
+            case 2 -> {
+            }
+            default -> System.out.println("Invalid Input. Try again.");
+        }
     }
 }

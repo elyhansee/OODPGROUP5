@@ -32,16 +32,8 @@ public class CustomerView {
         System.out.println("Address: " + customer.getAddress());
     }
 
-    public void displayProducts(List<Product> products) {
-        System.out.println("\nAvailable Products:");
-        for (Product p : products) {
-            System.out.println(p);
-        }
-        System.out.println("---------------------------");
-    }
-
-    public String promptSearchKeyword() {
-        return Menu.textInput("Enter search keyword: ");
+    public int customerActions(List<String> options){
+        return Menu.selection(options);
     }
 
     public void displayOrders(List<Order> orders) {

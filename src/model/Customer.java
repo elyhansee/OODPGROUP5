@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Customer extends User {
 
-    private static final List<CartItem> cartItems = new ArrayList<>();
+    public List<CartItem> cartItems = new ArrayList<>();
 
     public Customer(String userID, String name, String email, String password, String contact, String address, boolean firstLogin) {
         super(userID, name, email, password, "Customer", contact, address, firstLogin);

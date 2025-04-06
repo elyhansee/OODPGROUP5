@@ -8,32 +8,32 @@ import model.*;
 import util.CSVExporter;
 import util.CSVImporter;
 import util.Env;
-import view.CartView;
-import view.CustomerView;
-import view.OrderView;
-import view.SellerView;
+import view.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
     // In a complete system, these lists could be populated from CSV files.
-//    public static List<User> users = CSVImporter.importUsers(Env.get("DATA_DIR") + "/users.csv");
-//    public static List<Product> products = CSVImporter.importProducts(Env.get("DATA_DIR") + "/products.csv");
-//    public static List<Order> orders = CSVImporter.importOrders(Env.get("DATA_DIR") + "/orders.csv");
-    //public static List<String> bundles = CSVImporter.importBundles(Env.get("DATA_DIR") + "/bundles.csv");
-    public static List<User> users = CSVImporter.importUsers("src/data/users.csv");
-    public static List<Product> products = CSVImporter.importProducts("src/data/products.csv");
-    public static List<Order> orders = CSVImporter.importOrders("src/data/orders.csv");
-    //public static List<String> bundles = CSVImporter.importBundles("src/data/bundles.csv");
-
+    public static List<User> users = CSVImporter.importUsers(Env.get("DATA_DIR") + "/users.csv");
+    public static List<Product> products = CSVImporter.importProducts(Env.get("DATA_DIR") + "/products.csv");
+    public static List<Order> orders = CSVImporter.importOrders(Env.get("DATA_DIR") + "/orders.csv");
+    public static List<String> bundles = CSVImporter.importBundles(Env.get("DATA_DIR") + "/bundles.csv");
+//    public static List<User> users = CSVImporter.importUsers("src/data/users.csv");
+//    public static List<Product> products = CSVImporter.importProducts("src/data/products.csv");
+//    public static List<Order> orders = CSVImporter.importOrders("src/data/orders.csv");
+//    public static List<String> bundles = CSVImporter.importBundles("src/data/bundles.csv");
 
 
     public static void main(String[] args) {
+        //View
         OrderView orderView = new OrderView();
+        ProductView productView = new ProductView();
 
-        ProductController productcontroller = new ProductController(products);
+        //Controller
+        ProductController productcontroller = new ProductController(products, productView);
         OrderController ordercontroller = new OrderController(orders, orderView);
+
         Scanner scanner = new Scanner(System.in);
         resetExpiredDiscounts(products);
         System.out.println("˙⋆✮ Welcome to the E-Commerce Management System (ECMS) ✮⋆˙ ");
@@ -74,9 +74,9 @@ public class Main {
         // Dispatch to user role menus
         switch (currentUser.getRole()) {
             case "Customer" -> {
-                List<CartItem> cartItems = new ArrayList<>();
                 CartView cartView = new CartView();
-                CartController cartController = new CartController(cartItems, cartView);
+                Customer customer = (Customer) currentUser;
+                CartController cartController = new CartController(customer.cartItems, cartView);
                 CustomerView customerView = new CustomerView();
                 CustomerController customerController = new CustomerController(
                         (Customer) currentUser,
@@ -87,7 +87,7 @@ public class Main {
                 );
                 customerController.run();
             }
-            case "Seller" ->{
+            case "Seller" -> {
                 SellerView sellerView = new SellerView();
                 SellerController sellerController = new SellerController(
                         (Seller) currentUser,
@@ -95,7 +95,7 @@ public class Main {
                         ordercontroller,
                         sellerView
                 );
-                sellerController.run();
+                sellerController.run(scanner);
 //                Seller.handleSellerMenu((Seller) currentUser, scanner, products, orders);
             }
             case "Administrator" ->
@@ -133,7 +133,7 @@ public class Main {
                 try {
                     LocalDate expiry = LocalDate.parse(p.getDiscountExpiry(), formatter);
                     if (expiry.isBefore(today) || expiry.equals(today)) {
-                        double originalPrice = (p.getPrice()/(100-(p.getDiscountPercentage()))*100);
+                        double originalPrice = (p.getPrice() / (100 - (p.getDiscountPercentage())) * 100);
                         p.setPrice(originalPrice);
 
                         p.setDiscountPercentage(0.0);

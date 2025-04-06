@@ -29,6 +29,10 @@ public class Order {
         this.setDay();
     }
 
+    public String getOrderID() {
+        return orderID;
+    }
+
     public String getCustomerID() {
         return customerID;
     }

@@ -1,5 +1,6 @@
 package util;
 
+import model.Order;
 import model.User;
 import model.Product;
 
@@ -26,6 +27,7 @@ public class CSVExporter {
             System.out.println("Error writing to users.csv: " + e.getMessage());
         }
     }
+
     public static void updateUserPasswordByUID(String userId, String newPassword, String filePath) {
         try {
             List<String> lines = new ArrayList<>();
@@ -126,8 +128,8 @@ public class CSVExporter {
                     data[4] = String.valueOf(product.getStock());
                     data[5] = product.getSellerID();
                     data[6] = product.isActive();
-                    data[7]=  String.valueOf(product.getDiscountPercentage());
-                    data[8] =  product.getDiscountPercentage() == 0.0 ?"NULL": product.getDiscountExpiry();
+                    data[7] = String.valueOf(product.getDiscountPercentage());
+                    data[8] = product.getDiscountPercentage() == 0.0 ? "NULL" : product.getDiscountExpiry();
                     data[9] = String.valueOf(product.getMinPrice());
                     data[10] = String.valueOf(product.getMaxPrice());
 
@@ -146,9 +148,7 @@ public class CSVExporter {
             writer.close();
 
             System.out.println("\nVisibility Updated Successfully for Product " + product.getProductID() + "\n");
-        } 
-        
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Error updating visibility: " + e.getMessage());
         }
     }
@@ -168,13 +168,13 @@ public class CSVExporter {
                     .append(String.valueOf(product.getDiscountPercentage())).append(",")
                     .append(expiryStr)
                     .append(String.valueOf(product.getMinPrice())).append(",")
-                    .append(String.valueOf(product.getMaxPrice())).append("\n");;
+                    .append(String.valueOf(product.getMaxPrice())).append("\n");
+            ;
 
             writer.close();
 
             System.out.println("Product Successfully Added!");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -186,6 +186,14 @@ public class CSVExporter {
         } catch (IOException e) {
             System.out.println("Error writing bundle: " + e.getMessage());
         }
+    }
+
+    public static void insertOrder(Order order, String filePath) {
+
+    }
+
+    public static void updateOrder(Order order, String filePath) {
+
     }
 
 }

@@ -1,12 +1,9 @@
 package controller;
 
 import model.Customer;
-import model.Menu;
-import model.Product;
 import view.CustomerView;
 
 import java.util.List;
-import java.util.Optional;
 
 public class CustomerController {
     private final Customer customer;
@@ -30,26 +27,9 @@ public class CustomerController {
             choice = view.getUserMenuChoice();
             switch (choice) {
                 case 1 -> view.displayProfile(customer);
-                case 2 -> {
-                    List<Product> products = productController.getActiveProducts();
-                    view.displayProducts(products);
-                    List<String> options = List.of("Add to cart", "Back");
-                    int option = Menu.selection(options);
-                    switch (option) {
-                        case 1 -> handleAddToCart();
-                        case 2 -> {
-                        }
-                        default -> System.out.println("Invalid Input. Try again.");
-                    }
-                }
-                case 3 -> {
-                    String keyword = view.promptSearchKeyword();
-                    List<Product> results = productController.searchProducts(keyword);
-                    view.displayProducts(results);
-                }
-                case 4 -> {
-                    cartController.getCartItems();
-                }
+                case 2 -> showProducts();
+                case 3 -> productController.productSearch();
+                case 4 -> cartController.displayCart();
                 case 5 -> cartController.checkout(customer, orderController);
                 case 6 -> {
 //                    List<Order> orders = orderController.getCustomerOrders(customer.getUserID());
@@ -62,49 +42,51 @@ public class CustomerController {
         }
     }
 
-    public void handleAddToCart() {
-        String prod_ID = Menu.textInput("Enter Product ID (Case Sensitive). Type 'cancel' to cancel");
+    private void showProducts(){
+        productController.listProducts(productController.getActiveProducts());
+        handleCustomerActions();
+    }
 
-        if (prod_ID.equalsIgnoreCase("cancel")) {
-            System.out.println("Cancelled");
-            return;
-        }
-
-        Optional<Product> addProduct = productController.getProductById(prod_ID);
-        if (addProduct.isEmpty()) {
-            System.out.println("Product not found");
-            return;
-        }
-
-        Product product = addProduct.get();
-        while (true) {
-            int prod_qty = Menu.numericInput("Enter product quantity. Type 0 to cancel");
-            if (prod_qty == 0) return;
-
-            if (prod_qty < 0 || prod_qty > product.getStock()) {
-                System.out.println("Invalid Stock Amount");
-            } else {
-                System.out.println("Add to Cart:");
-                System.out.println("ID: " + product.getProductID());
-                System.out.println("Name: " + product.getName());
-                System.out.println("Qty: " + prod_qty);
-                System.out.println("--------------------");
-                System.out.printf("Total Price:$%.2f %n", (prod_qty * product.getPrice()));
-
-                String confirmation = Menu.textInput("Add to Cart? y/n");
-                if (confirmation.equalsIgnoreCase("y")) {
-                    cartController.addItem(product, prod_qty);
-                    System.out.println("ADDED TO CART");
-                    break;
-                } else if (confirmation.equalsIgnoreCase("n")) {
-                    System.out.println("Purchase Cancelled");
-                    break;
-                } else {
-                    System.out.println("Invalid input");
-                }
+    private void handleCustomerActions() {
+        List<String> options = List.of("Add to cart", "Back");
+        int action = view.customerActions(options);
+        switch (action) {
+            case 1 -> cartController.addToCart(productController);
+            case 2 -> {
             }
+            default -> System.out.println("Invalid Input. Try again.");
         }
     }
+
+//    private void viewOrderStatus(List<Order> order) {
+//        if (order.isEmpty()) {
+//            System.out.println("You have no pending orders!");
+//            return;
+//        } else {
+//            System.out.println("\n== Recent Orders ==");
+//            for (Order o : order) {
+//                if (o.getCustomerID().equals(userID)) {
+//                    System.out.println(o.toString());
+//                }
+//            }
+//            exitMenu();
+//        }
+//    }
+//
+//    private void viewPastOrders(List<Order> order) {
+//        if (order.isEmpty()) {
+//            System.out.println("You have not ordered anything before.");
+//            return;
+//        } else {
+//            System.out.println("\n== Past Orders ==");
+//            for (Order o : order) {
+//                if (o.getCustomerID().equals(userID) && o.getStatus().equals("Delivered")) {
+//                    System.out.println(o.toStringPast());
+//                }
+//            }
+//            exitMenu();
+//        }
+//    }
 
 
 }

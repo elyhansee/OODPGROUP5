@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
-    public static int selection(List<String> options) {
-        Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static int selection(List<?> options) {
         int choice = -1;
 
         while (true) {
@@ -35,8 +36,7 @@ public class Menu {
     }
 
     public static int numericInput(String caption) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println(caption);
+        System.out.print(caption);
 
         int choice;
         while (true) {
@@ -52,8 +52,7 @@ public class Menu {
     }
 
     public static String textInput(String caption) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println(caption);
+        System.out.print(caption);
 
         String user_input;
         while (true) {
@@ -69,10 +68,7 @@ public class Menu {
 
     // Used if the input doesnt matter
     public static void singleSelection() {
-        Scanner scanner = new Scanner(System.in);
-
         System.out.println("Enter Any Button To Return");
         scanner.nextLine();
-        return;
     }
 }

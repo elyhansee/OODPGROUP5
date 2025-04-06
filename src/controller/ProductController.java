@@ -2,33 +2,48 @@ package controller;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import model.Menu;
 import model.Product;
-import model.Seller;
 import util.CSVExporter;
 import util.CSVImporter;
 import util.Env;
+import view.ProductView;
 
 // This class controls the manipulation of products
 public class ProductController {
     private final List<Product> StoreProducts;
+    private final ProductView view;
     private static final String filePath = Env.get("DATA_DIR") + "/products.csv";
     private static final String bundleFilePath = ".\\data\\bundles.csv"; //PLACEHOLDER 050425
 
-    public ProductController(List<Product> storeProducts) {
+    public ProductController(List<Product> storeProducts, ProductView view) {
         this.StoreProducts = storeProducts;
+        this.view = view;
+    }
+
+    //    SHARED METHOD
+    public void listProducts(List<Product> products) {
+        view.displayProducts(products);
+    }
+
+    //Return a list of products
+    public void productSearch() {
+        String searchInput = view.productSearch();
+        List<Product> searchResults = searchProducts(searchInput);
+        view.displayProducts(searchResults);
     }
 
     public List<Product> getActiveProducts() {
         return StoreProducts.stream()
-                .filter(p -> p.isActive().equals("True"))
-                .collect(Collectors.toList());
+                .filter(p -> p.isActive().equals("True")).toList();
     }
 
-    public List<Product> searchProducts(String keyword) {
+    public List<Product> getStoreProducts(String ID) {
+        return StoreProducts.stream().filter(p -> p.getSellerID().equals(ID)).toList();
+    }
+
+    private List<Product> searchProducts(String keyword) {
         String lowered = keyword.toLowerCase();
         return StoreProducts.stream()
                 .filter(p -> p.getName().toLowerCase().contains(lowered)
@@ -56,35 +71,18 @@ public class ProductController {
     }
 
     //    SELLER METHODS
-    public void updateProduct(Product products) {
-        CSVExporter.updateProducts(products, filePath);
-    }
-
+    //Add product to catalogue during runtime
     public void addProduct(Product product) {
         CSVExporter.insertProducts(product, filePath);
+        StoreProducts.add(product);
     }
 
-    public static void sellerWrite(Product product) {
+    public void sellerWrite(Product product) {
         CSVExporter.updateProducts(product, filePath);
     }
 
     public void sellerNewProduct(Product product) {
         CSVExporter.insertProducts(product, filePath);
-    }
-
-    public List<Product> getProductsBySeller(String sellerId) {
-        return StoreProducts.stream()
-                .filter(p -> p.getSellerID().equals(sellerId))
-                .collect(Collectors.toList());
-    }
-
-    // Sorts products based on the seller's ID
-    public List<Product> sortProducts(Seller seller) {
-        List<Product> sortedProducts = StoreProducts.stream()
-                .filter(products -> (products.getSellerID().equals(seller.getUserID())))
-                .collect(Collectors.toList());
-
-        return sortedProducts;
     }
 
 

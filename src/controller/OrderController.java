@@ -3,10 +3,10 @@ package controller;
 import model.CartItem;
 import model.Customer;
 import model.Order;
-import model.Seller;
 import view.OrderView;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class OrderController {
@@ -36,18 +36,15 @@ public class OrderController {
     }
 
     // Sorts orders based on the seller's ID
-    public List<Order> sortOrders(Seller seller, List<Order> order) {
-        List<Order> sortedOrders = order.stream()
-                .filter(orders -> (orders.getSellerID().equals(seller.getUserID())))
-                .collect(Collectors.toList());
-        return sortedOrders;
+    public List<Order> getSellerOrders(String sellerID, boolean display) {
+        List<Order> sellerOrders = orders.stream().filter(orders1 -> orders1.getSellerID().equals(sellerID)).toList();
+        if (display) view.displayOrders(sellerOrders);
+        return sellerOrders;
     }
 
-    // Maybe theres a way to make it generic
-    // Sorts orders based on the customer's ID
-    public List<Order> sortOrdersCustomer(Customer customer, List<Order> order) {
-        List<Order> sortedOrders = order.stream()
-                .filter(orders -> (orders.getCustomerID().equals(customer.getUserID())))
+    public List<Order> getCustomerOrders(String customerID) {
+        List<Order> sortedOrders = orders.stream()
+                .filter(order -> order.getCustomerID().equals(customerID))
                 .collect(Collectors.toList());
         return sortedOrders;
     }

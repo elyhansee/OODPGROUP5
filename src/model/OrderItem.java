@@ -1,8 +1,8 @@
 package model;
 
 public class OrderItem {
-    private final Product product;
-    private final int quantity;
+    private Product product;
+    private int quantity;
 
     public OrderItem(Product product, int quantity) {
         this.product = product;
@@ -15,6 +15,10 @@ public class OrderItem {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     @Override

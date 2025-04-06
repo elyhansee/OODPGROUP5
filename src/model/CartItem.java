@@ -10,7 +10,7 @@ public class CartItem extends OrderItem {
 
     @Override
     public String toString() {
-        return String.format("Product ID: %s | Product: %s | Quantity: %d", this.getCartItemID(), super.getProduct().getName(), super.getQuantity());
+        return String.format("Cart Item ID: %s | Product: %s | Quantity: %d", this.getCartItemID(), super.getProduct().getName(), super.getQuantity());
     }
 
     public String getCartItemID() {

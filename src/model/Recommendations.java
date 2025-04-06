@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Recommendations {
 
-    public static void displayRecommendations (String currentProductID, List<Product> product, Scanner scanner, ProductController productController, Customer customer) { // PLACEHOLDER
+    public static void displayRecommendations(String currentProductID, List<Product> product, Scanner scanner, ProductController productController, Customer customer) { // PLACEHOLDER
 
         List<String> bundles = CSVImporter.importBundles("src/data/bundles.csv");
 
@@ -45,7 +45,7 @@ public class Recommendations {
                 int quantity = Integer.parseInt(scanner.nextLine());
 
 
-                customer.getCart().addItem(recommandedProducts.get(choice - 1), quantity);
+//                customer.getCart().addItem(recommandedProducts.get(choice - 1), quantity);
             }
         } else {
             return; // No Recommanded Products
