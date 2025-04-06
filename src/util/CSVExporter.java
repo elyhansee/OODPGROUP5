@@ -226,6 +226,8 @@ public class CSVExporter {
                     data[6] = (order.getYear() + "-" + order.getMonth() + "-" + order.getDay());
                     data[7] = order.getSellerID();
                     data[8] = Double.toString(order.getCost());
+
+                    line = String.join(",", data);
                 }
                 lines.add(line);
             }
