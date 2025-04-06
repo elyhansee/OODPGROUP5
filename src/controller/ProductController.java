@@ -64,7 +64,7 @@ public class ProductController {
         CSVExporter.insertProducts(product, filePath);
     }
 
-    public void sellerWrite(Product product) {
+    public static void sellerWrite(Product product) {
         CSVExporter.updateProducts(product, filePath);
     }
 

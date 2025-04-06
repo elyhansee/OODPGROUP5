@@ -118,7 +118,7 @@ public class CSVExporter {
                 String[] data = line.split(",");
 
                 // Assumes productID is in the 1st column (index 0)
-                if (data.length >= 9 && data[0].equals(product.getProductID())) {
+                if (data.length >= 11 && data[0].equals(product.getProductID())) {
                     data[0] = product.getProductID();
                     data[1] = product.getName();
                     data[2] = product.getDescription();
@@ -128,6 +128,8 @@ public class CSVExporter {
                     data[6] = product.isActive();
                     data[7]=  String.valueOf(product.getDiscountPercentage());
                     data[8] =  product.getDiscountPercentage() == 0.0 ?"NULL": product.getDiscountExpiry();
+                    data[9] = String.valueOf(product.getMinPrice());
+                    data[10] = String.valueOf(product.getMaxPrice());
 
                     line = String.join(",", data);
                 }
@@ -151,7 +153,7 @@ public class CSVExporter {
         }
     }
 
-        public static void insertProducts(Product product, String filePath) {
+    public static void insertProducts(Product product, String filePath) {
         try {
             String expiryStr = product.getDiscountExpiry().isEmpty() ? "NULL" : product.getDiscountExpiry();
 
@@ -164,7 +166,9 @@ public class CSVExporter {
                     .append(product.getSellerID()).append(",")
                     .append(product.isActive()).append(",")
                     .append(String.valueOf(product.getDiscountPercentage())).append(",")
-                    .append(expiryStr).append("\n");
+                    .append(expiryStr)
+                    .append(String.valueOf(product.getMinPrice())).append(",")
+                    .append(String.valueOf(product.getMaxPrice())).append("\n");;
 
             writer.close();
 
@@ -174,4 +178,14 @@ public class CSVExporter {
             e.printStackTrace();
         }
     }
+
+    public static void appendBundle(List<String> bundle, String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            writer.write(String.join(",", bundle));
+            writer.newLine();
+        } catch (IOException e) {
+            System.out.println("Error writing bundle: " + e.getMessage());
+        }
+    }
+
 }

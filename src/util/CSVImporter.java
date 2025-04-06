@@ -85,7 +85,7 @@ public class CSVImporter {
             while ((line = reader.readLine()) != null) {
                 String[] readData = line.split(",");
 
-                if (readData.length >= 9) { // 6 is the number of parameters needed
+                if (readData.length >= 11) { // 6 is the number of parameters needed
                     String productID = readData[0];
                     String name = readData[1];
                     String description = readData[2];
@@ -96,8 +96,11 @@ public class CSVImporter {
                     String active = readData[6];//.equals("True");
                     double discount = Double.parseDouble(readData[7]);
                     String expiry = readData.length > 8 ? readData[8] : "";
+                    double minPrice = Double.parseDouble(readData[9]);
+                    double maxPrice = Double.parseDouble(readData[10]);
                     Product newProduct = new Product(productID, name, description, price, stock, sellerID, active, discount, expiry);
-
+                    newProduct.setMinPrice(minPrice);
+                    newProduct.setMaxPrice(maxPrice);
                     if (newProduct != null) {
                         products.add(newProduct);
                     }
