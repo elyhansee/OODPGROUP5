@@ -166,7 +166,7 @@ public class CSVExporter {
                     .append(product.getSellerID()).append(",")
                     .append(product.isActive()).append(",")
                     .append(String.valueOf(product.getDiscountPercentage())).append(",")
-                    .append(expiryStr)
+                    .append(expiryStr).append(",")
                     .append(String.valueOf(product.getMinPrice())).append(",")
                     .append(String.valueOf(product.getMaxPrice())).append("\n");
             ;

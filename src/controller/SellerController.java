@@ -9,6 +9,7 @@ import view.SellerView;
 
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SellerController {
     private final Seller seller;
@@ -109,17 +110,16 @@ public class SellerController {
         try {
             //Get All seller products
             List<Product> products = productController.getStoreProducts(this.seller.getUserID());
-            List<String> options = new ArrayList<>(products.stream().map(Product::getProductID).toList());
-            view.displaySellerProducts(products);
-//            System.out.println("\nYour Products:");
-//            for (Product p : products) {
-//                System.out.println(p.toStringSeller());
-//                options.add(p.getProductID());
-//            }
+            List<String> options = new ArrayList<>(products.stream().map(product -> String.format("%-14s | %-10s | $%-5.2f | %-20s | %d",
+                                                                                        product.getProductID(),
+                                                                                        product.getName(),
+                                                                                        product.getPrice(),
+                                                                                        product.getDescription(),
+                                                                                        product.getStock()))
+            .collect(Collectors.toList()));
 
-            String selectedProductID = view.selectProductID(options);
+            String selectedProductID = (view.selectProductID(options)).split(" ")[0];
             if (!selectedProductID.equalsIgnoreCase("Back")) {
-//                productID = products.get(sellerChoice - 1).getProductID();
                 Product target = productController.getProductById(selectedProductID).orElseThrow();
 
                 System.out.println("Enter new price (or press Enter to skip): ");
@@ -311,13 +311,22 @@ public class SellerController {
 
     // Toggles visibility
     private void toggleListings() {
-        List<Product> products = productController.getStoreProducts(seller.getUserID());
-        List<String> options = products.stream().map(Product::getProductID).toList();
-        view.displaySellerProducts(products);
-        int sellerChoice = editMenu(options);
-        if (sellerChoice != options.size()) {
-            products.get(sellerChoice - 1).toggleVisibility();
-            productController.sellerWrite(products.get(sellerChoice - 1));
+        List<Product> products = productController.getStoreProducts(this.seller.getUserID());
+        List<String> options = new ArrayList<>(products.stream().map(product -> String.format("%-14s | %-10s | $%-5.2f | %-20s | %d | %s",
+                                                                                        product.getProductID(),
+                                                                                        product.getName(),
+                                                                                        product.getPrice(),
+                                                                                        product.getDescription(),
+                                                                                        product.getStock(),
+                                                                                        product.isActive()))
+        .collect(Collectors.toList()));
+
+        String selectedProductID = (view.selectProductID(options)).split(" ")[0];
+        if (!selectedProductID.equalsIgnoreCase("Back")) {
+            Product target = productController.getProductById(selectedProductID).orElseThrow();
+            target.toggleVisibility();
+
+            productController.sellerWrite(target);
         }
     }
 
