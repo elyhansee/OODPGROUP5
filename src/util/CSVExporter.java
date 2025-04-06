@@ -190,7 +190,7 @@ public class CSVExporter {
     public static void insertOrder(Order order) {
         //File Path simulates updating to an SQL Database
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(Env.get("DATA_DIR") + "/orders.csv"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(Env.get("DATA_DIR") + "/orders.csv", true));
             writer.append(order.getCustomerID()).append(",")
                     .append(order.getOrderID()).append(",")
                     .append(order.getProductName()).append(",")
@@ -216,7 +216,7 @@ public class CSVExporter {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
 
-                if(data.length == 9 && data[1].equals(order.getOrderID())){
+                if (data.length == 9 && data[1].equals(order.getOrderID())) {
                     data[0] = order.getCustomerID();
                     data[1] = order.getOrderID();
                     data[2] = order.getProductName();
@@ -230,6 +230,14 @@ public class CSVExporter {
                 lines.add(line);
             }
             reader.close();
+
+            // Write all lines back to the same file
+            FileWriter writer = new FileWriter(Env.get("DATA_DIR") + "/orders.csv");
+            for (String updatedLine : lines) {
+                writer.write(updatedLine + "\n");
+            }
+            writer.close();
+
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
