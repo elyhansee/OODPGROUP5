@@ -51,11 +51,16 @@ public class CustomerController {
         List<String> options = List.of("Add to cart", "Back");
         int action = view.customerActions(options);
         switch (action) {
-            case 1 -> cartController.addToCart(productController);
+            case 1 -> cartController.addToCart(productController, this);
             case 2 -> {
             }
             default -> System.out.println("Invalid Input. Try again.");
         }
+    }
+
+    
+    public void invokeHandleCustomerActions() {
+        handleCustomerActions();
     }
 
     private void showOrders() {
