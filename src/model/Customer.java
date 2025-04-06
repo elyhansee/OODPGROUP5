@@ -2,9 +2,9 @@ package model;
 
 import controller.OrderController;
 import controller.ProductController;
+import util.CSVExporter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -142,6 +142,7 @@ public class Customer extends User {
                 if (confirmation.equalsIgnoreCase("y")) {
                     cart.addItem(product, prod_qty);
                     System.out.println("ADDED TO CART");
+                    Recommendations.displayRecommendations(product.getProductID(), products, scanner, productController, this);
                     break;
                 } else if (confirmation.equalsIgnoreCase("n")) {
                     System.out.println("Purchase Cancelled");
@@ -172,6 +173,13 @@ public class Customer extends User {
         String shipOption = scanner.nextLine();
         // Payment simulation
         System.out.println("Payment authorized (simulation).");
+        for (OrderItem item : cart.getItems()) {
+            Product product = item.getProduct();
+            product.incrementSales();                // Track that the product has sold
+            product.applyDynamicPricing();           // Adjust price based on salesCount
+            CSVExporter.updateProducts(product, "src/data/products.csv"); // Save updated price
+        }
+
 
         // @Ethan for your attention
         System.out.println("Date Purchased: " + LocalDate.now()); // Format in 2025-04-05 for LocalDate.now()

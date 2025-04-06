@@ -14,7 +14,6 @@ public class Product {
     private double maxPrice;
     private int salesCount = 0;
     private int salesTarget = 10; // default target
-    private int timeSinceLastSale = 0; // simulate time
 
     private double discountPercentage=0;
     private String discountExpiry;
@@ -23,7 +22,7 @@ public class Product {
         this.productID = productID;
         this.name = name;
         this.description = description;
-        this.price = price;
+        this.price = price+salesCount;
         this.stock = stock;
         this.sellerID = sellerID;
         this.active = active;
@@ -91,10 +90,10 @@ public class Product {
         return maxPrice;
     }
 
-    public double getFinalPrice() {
+    public double original() {
         double finalPrice = price;
         if (discountPercentage > 0.0) {
-            finalPrice = price - (price * (discountPercentage / 100));
+            finalPrice =( price /(100-discountPercentage))*100;
         }
         return finalPrice;
     }
@@ -103,7 +102,7 @@ public class Product {
     public String toString() {
         if (discountPercentage > 0) {
             return String.format("ID: %s | Name: %s | Original Price: %.2f | Discounted Price: %.2f | Stock: %d | Description: %s",
-                    productID, name, price, getFinalPrice(), stock, description);
+                    productID, name, original(), price, stock, description);
         } else {
             return String.format("ID: %s | Name: %s | Price: %.2f | Stock: %d | Description: %s",
                     productID, name, price, stock, description);
@@ -115,23 +114,20 @@ public class Product {
                 productID, name, price, stock, description, active);
     }
 
-    public int getSalesCount() { return salesCount; }
-    public void incrementSales() { salesCount++; timeSinceLastSale = 0; }
-
-    public void setSalesTarget(int target) { this.salesTarget = target; }
-    public int getSalesTarget() { return salesTarget; }
-
-    public void simulateTimePassing() { timeSinceLastSale++; }
+    public void incrementSales() { salesCount++; }
 
     public void applyDynamicPricing() {
-        if (salesCount < salesTarget && timeSinceLastSale > 2) {
-            // Decrease price towards minPrice
-            price = Math.max(minPrice, price - 1);
+        if (salesCount < salesTarget) {
+            price = Math.max(minPrice, price - 1);// Encourage sales
+            if(price>maxPrice)
+                price = maxPrice;
         } else if (salesCount >= salesTarget) {
-            // Increase price towards maxPrice
-            price = Math.min(maxPrice, price + 1);
+            price = Math.min(maxPrice, price + 1); // Ride the trend
+            if(price<minPrice)
+                price = minPrice;
         }
     }
+
     public double getDiscountPercentage() { return discountPercentage; }
     public String getDiscountExpiry() { return discountExpiry; }
 

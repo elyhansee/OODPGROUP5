@@ -1,14 +1,16 @@
 package model;
 
 import controller.ProductController;
+import util.CSVImporter;
 
 import java.util.*;
 
 public class Recommendations {
 
-    public static void displayRecommendations (String currentProductID, List<Product> product, Scanner scanner, ProductController productController) { // PLACEHOLDER
+    public static void displayRecommendations (String currentProductID, List<Product> product, Scanner scanner, ProductController productController, Customer customer) { // PLACEHOLDER
 
-        List<String> bundles = productController.getBundles();
+        List<String> bundles = CSVImporter.importBundles("src/data/bundles.csv");
+
         List<Product> recommandedProducts = new ArrayList<>();
 
         String bundleIDs = "";
@@ -38,11 +40,12 @@ public class Recommendations {
             int choice = editMenu(options);
 
             if (choice != options.size()) {
+                scanner.nextLine();
                 System.out.println("Enter Quantity:");
                 int quantity = Integer.parseInt(scanner.nextLine());
-                Cart cart = new Cart();
 
-                cart.addItem(recommandedProducts.get(choice - 1), quantity);
+
+                customer.getCart().addItem(recommandedProducts.get(choice - 1), quantity);
             }
         }
         else {

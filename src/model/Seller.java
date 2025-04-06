@@ -2,6 +2,7 @@ package model;
 
 import controller.OrderController;
 import controller.ProductController;
+import util.CSVExporter;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -63,12 +64,12 @@ public class Seller extends User {
                     break;
                 case 5:
                     // Stub: set min-max pricing
-                    System.out.println("Setting min-max price ranges (stub).");
+                    System.out.println("Setting min-max price ranges.");
                     seller.setMinMaxPrice(products, scanner);
                     break;
                 case 6:
-                    // Stub: set bundled items recommendation
-                    System.out.println("Setting bundled items for a product (stub).");
+                    System.out.println("Setting bundled items for a product.");
+                    seller.setBundledItems(products, scanner);
                     break;
                 case 7:
                     seller.generateSalesReport(products, orders, scanner, orderController);
@@ -235,6 +236,7 @@ public class Seller extends User {
             System.out.print("Enter the new minimum price: ");
             double minPrice = Double.parseDouble(scanner.nextLine());
             minProduct.setMinPrice(minPrice);
+            controller.ProductController.sellerWrite(minProduct);
             System.out.println("Minimum price set successfully.");
         } else {
             System.out.println("Product not found or unauthorized.");
@@ -248,6 +250,7 @@ public class Seller extends User {
             System.out.print("Enter the new maximum price: ");
             double maxPrice = Double.parseDouble(scanner.nextLine());
             maxProduct.setMaxPrice(maxPrice);
+            controller.ProductController.sellerWrite(maxProduct);
             System.out.println("Maximum price set successfully.");
         } else {
             System.out.println("Product not found or unauthorized.");
@@ -376,4 +379,46 @@ public class Seller extends User {
     private void exitMenu() {
         Menu.singleSelection();
     }
+
+    public void setBundledItems(List<Product> products, Scanner scanner) {
+        List<String> productIds = new ArrayList<>();
+        for (Product p : products) {
+            if (p.getSellerID().equals(this.userID)) {
+                System.out.println(p.toStringSeller());
+                productIds.add(p.getProductID());
+            }
+        }
+
+        System.out.print("Enter Product ID to set recommendations for: ");
+        String baseProductId = scanner.nextLine();
+
+        Product baseProduct = findMyProductById(products, baseProductId);
+        if (baseProduct == null) {
+            System.out.println("Invalid product ID.");
+            return;
+        }
+
+        List<String> bundle = new ArrayList<>();
+        bundle.add(baseProductId);
+
+        while (true) {
+            System.out.print("Enter related Product ID to add (or 'done' to finish): ");
+            String relatedId = scanner.nextLine();
+            if (relatedId.equalsIgnoreCase("done")) break;
+
+            if (!relatedId.equals(baseProductId) && productIds.contains(relatedId)) {
+                bundle.add(relatedId);
+            } else {
+                System.out.println("Invalid ID or duplicate.");
+            }
+        }
+
+        if (bundle.size() > 1) {
+            CSVExporter.appendBundle(bundle, ".\\data\\bundles.csv"); // Or Env.get("DATA_DIR")
+            System.out.println("Bundled recommendation saved.");
+        } else {
+            System.out.println("Bundle must include at least one additional product.");
+        }
+    }
+
 }
