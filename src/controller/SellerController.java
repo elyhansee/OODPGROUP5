@@ -113,12 +113,12 @@ public class SellerController {
             //Get All seller products
             List<Product> products = productController.getStoreProducts(this.seller.getUserID());
             List<String> options = new ArrayList<>(products.stream().map(product -> String.format("%-14s | %-10s | $%-5.2f | %-20s | %d",
-                                                                                        product.getProductID(),
-                                                                                        product.getName(),
-                                                                                        product.getPrice(),
-                                                                                        product.getDescription(),
-                                                                                        product.getStock()))
-            .collect(Collectors.toList()));
+                            product.getProductID(),
+                            product.getName(),
+                            product.getPrice(),
+                            product.getDescription(),
+                            product.getStock()))
+                    .collect(Collectors.toList()));
 
             String selectedProductID = (view.selectProductID(options)).split(" ")[0];
             if (!selectedProductID.equalsIgnoreCase("Back")) {
@@ -315,13 +315,13 @@ public class SellerController {
     private void toggleListings() {
         List<Product> products = productController.getStoreProducts(this.seller.getUserID());
         List<String> options = new ArrayList<>(products.stream().map(product -> String.format("%-14s | %-10s | $%-5.2f | %-20s | %d | %s",
-                                                                                        product.getProductID(),
-                                                                                        product.getName(),
-                                                                                        product.getPrice(),
-                                                                                        product.getDescription(),
-                                                                                        product.getStock(),
-                                                                                        product.isActive()))
-        .collect(Collectors.toList()));
+                        product.getProductID(),
+                        product.getName(),
+                        product.getPrice(),
+                        product.getDescription(),
+                        product.getStock(),
+                        product.isActive()))
+                .collect(Collectors.toList()));
 
         String selectedProductID = (view.selectProductID(options)).split(" ")[0];
         if (!selectedProductID.equalsIgnoreCase("Back")) {
