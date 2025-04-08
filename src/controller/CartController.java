@@ -1,6 +1,7 @@
 package controller;
 
 import model.*;
+import util.CSVExporter;
 import view.CartView;
 
 import java.time.LocalDate;
@@ -80,6 +81,8 @@ public class CartController {
         String orderID = Long.toString(System.currentTimeMillis());
         for (CartItem item : shoppingCart) {
             orderController.newOrder(item, customer, orderID, purchaseDate, shipAddr, shipOption);
+            System.out.println("UPDATEING PRICE");
+            CSVExporter.updateProducts(item.getProduct(), "src/data/products.csv"); // Save updated price
         }
         // Generate order ID and clear cart (stub)
         System.out.println("Order placed successfully. Order ID: " + orderID);
