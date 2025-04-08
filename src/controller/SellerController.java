@@ -199,6 +199,7 @@ public class SellerController {
             System.out.print("Enter the new minimum price: ");
             double minPrice = Double.parseDouble(scanner.nextLine());
             minProduct.setMinPrice(minPrice);
+            productController.sellerWrite(minProduct);
             System.out.println("Minimum price set successfully.");
         } else {
             System.out.println("Product not found or unauthorized.");
@@ -212,6 +213,7 @@ public class SellerController {
             System.out.print("Enter the new maximum price: ");
             double maxPrice = Double.parseDouble(scanner.nextLine());
             maxProduct.setMaxPrice(maxPrice);
+            productController.sellerWrite(maxProduct);
             System.out.println("Maximum price set successfully.");
         } else {
             System.out.println("Product not found or unauthorized.");

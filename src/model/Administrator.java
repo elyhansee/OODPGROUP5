@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class Administrator extends User {
 
     public Administrator(String userID, String name, String email, String password, String contact, String address) {
-        super(userID, name, email, password, "Administrator", contact, address,false);
+        super(userID, name, email, password, "Administrator", contact, address, false);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class Administrator extends User {
                 System.out.println("Invalid input. Please try again.");
                 continue;
             }
-            switch(choice) {
+            switch (choice) {
                 case 1:
                     admin.viewProfile();
                     break;
@@ -60,18 +60,18 @@ public class Administrator extends User {
     }
 
     private void manageUsers(List<User> users, Scanner scanner) {
-        while (true) {
-            System.out.println("Manage Users:");
-            System.out.println("1. Add New User");
-            System.out.println("2. Update User Information");
-            System.out.println("3. Back");
-            System.out.print("Enter choice: ");
-            int choice = Integer.parseInt(scanner.nextLine());
-            switch (choice) {
-                case 1 -> {
-                    registerNewUser(users, scanner);
-                }
-                case 2 -> {editUserInfo(users, scanner);}
+        System.out.println("Manage Users:");
+        System.out.println("1. Add New User");
+        System.out.println("2. Update User Information");
+        System.out.println("3. Back");
+        System.out.print("Enter choice: ");
+        int choice = Integer.parseInt(scanner.nextLine());
+        switch (choice) {
+            case 1 -> {
+                registerNewUser(users, scanner);
+            }
+            case 2 -> {
+                editUserInfo(users, scanner);
             }
         }
     }
@@ -100,7 +100,7 @@ public class Administrator extends User {
 
         System.out.print("Enter new value: ");
         String newValue = scanner.nextLine();
-        while((field == 1)&& isValidAndUniqueUserID(newValue,users)) {
+        while ((field == 1) && isValidAndUniqueUserID(newValue, users)) {
             System.out.print("User ID Already in use please input a new value: ");
             newValue = scanner.nextLine();
         }
@@ -203,7 +203,8 @@ public class Administrator extends User {
             String status = order.getStatus().toLowerCase();
             if (status.contains("shipping")) shippingCount++;
             else if (status.contains("delivered")) deliveredCount++;
-            else if (status.contains("cancel") || status.contains("sinkhole") || status.contains("drowned")) canceledCount++;
+            else if (status.contains("cancel") || status.contains("sinkhole") || status.contains("drowned"))
+                canceledCount++;
             else otherCount++;
         }
 
@@ -214,7 +215,7 @@ public class Administrator extends User {
         System.out.printf("• In Shipping: %d\n• Delivered: %d\n• Canceled/Failed: %d\n• Other: %d\n", shippingCount, deliveredCount, canceledCount, otherCount);
     }
 
-    public  void manageCampaigns(Scanner scanner, List<Product> products) {
+    public void manageCampaigns(Scanner scanner, List<Product> products) {
         System.out.println("\n--- Global Discount Campaigns ---");
         System.out.println("1. Apply discount to ALL products");
         System.out.println("2. Apply discount to a SPECIFIC product");
@@ -232,9 +233,10 @@ public class Administrator extends User {
 
     public void applyGlobalDiscount(Scanner scanner, List<Product> products) {
         System.out.println("\n--- ALL Products ---");
-        double discountPercent;int days;
+        double discountPercent;
+        int days;
         while (true) {
-            try{
+            try {
                 System.out.print("Enter discount percentage (e.g. 10 without percent sign): ");
                 discountPercent = Double.parseDouble(scanner.nextLine());
                 break;
@@ -243,7 +245,7 @@ public class Administrator extends User {
             }
         }
         while (true) {
-            try{
+            try {
                 System.out.print("Enter number of days (campaign duration): ");
                 days = Integer.parseInt(scanner.nextLine()); // For future use/logging
                 break;
