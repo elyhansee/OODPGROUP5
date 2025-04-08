@@ -89,57 +89,132 @@ public class Administrator extends User {
         System.out.println("6. Address");
         System.out.print("Enter your choice: ");
         int field = Integer.parseInt(scanner.nextLine());
-
-        if (field == 4) {
-            System.out.print("New password: ");
-            String newPassword = scanner.nextLine();
-            CSVExporter.updateUserPasswordByUID(userId, newPassword, "src/data/users.csv");
-            System.out.println("Password updated successfully.");
-            return;
-        }
-
-        System.out.print("Enter new value: ");
-        String newValue = scanner.nextLine();
-        while ((field == 1) && isValidAndUniqueUserID(newValue, users)) {
-            System.out.print("User ID Already in use please input a new value: ");
+        String newValue;
+        while (true) {
+            System.out.print("Enter new value: ");
             newValue = scanner.nextLine();
+
+            switch (field) {
+                case 1:
+                    if (!newValue.startsWith("C")&&!newValue.startsWith("S")&&!newValue.startsWith("A")) {
+                        System.out.println("User ID must start with 'C', 'S', or 'A'.");
+                        continue;
+                    }
+                    if (isValidAndUniqueUserID(newValue, users)) {
+                        System.out.println("This User ID already exists.");
+                        continue;
+                    }
+
+                    break;
+                case 2:
+                    if(!name.isEmpty()) {
+                        break;
+                    }else{System.out.println("Invalid input. Please try again.");continue;}
+                case 6: // Address
+                    if (newValue.isEmpty()) {
+                        System.out.println("This field cannot be empty.");
+                        continue;
+                    }
+                    break;
+
+                case 3: // Email
+                    if (!newValue.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                        System.out.println("Invalid email format.");
+                        continue;
+                    }
+                    if (validEmail(newValue,users)) {
+                        System.out.println("This email is already in use.");
+                        continue;
+                    }
+                    break;
+                case 4:
+                    System.out.print("New password: ");
+                    String newPassword = scanner.nextLine();
+                    CSVExporter.updateUserPasswordByUID(userId, newPassword, "src/data/users.csv");
+                    System.out.println("Password updated successfully.");
+                    continue;
+                case 5: // Contact
+                    if (!newValue.matches("\\d{8}")) {
+                        System.out.println("Contact number must be 8 digits.");
+                        continue;
+                    }
+                    break;
+                default:
+                    System.out.println("Invalid field choice.");
+                    return;
+            }
+            break;
         }
-
         CSVExporter.updateUserFieldByUID(userId, field - 1, newValue, "src/data/users.csv");
-
+        for (User user : users) {
+            if (user.getUserID().equals(userId)) {
+                switch (field) {
+                    case 1 -> user.setUserID(newValue);
+                    case 2 -> user.setName(newValue);
+                    case 3 -> user.setEmail(newValue);
+                    case 5 -> user.setContact(newValue);
+                    case 6 -> user.setAddress(newValue);
+                }
+                break; // Found and updated, exit loop
+            }
+        }
         System.out.println("User information updated successfully.");
     }
 
 
     public static void registerNewUser(List<User> users, Scanner scanner) {
-        System.out.print("Enter Name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter Email: ");
-        String email = scanner.nextLine();
-        String role = "";
+        String name,email,role="",contact,address;
+        while(true) {
+            System.out.print("Enter Name: ");
+            name = scanner.nextLine();
+            if(!name.isEmpty()) {
+                break;
+            }else{System.out.println("Invalid input. Please try again.");}
+        }
+        while(true) {
+            System.out.print("Enter Email: ");
+            email = scanner.nextLine();
+            if(!validEmail(email,users)) {
+                System.out.println("Invalid Email, already exists.");
+            }
+            else {
+                if (email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                    break;}
+                else {System.out.println("Invalid email format. Please try again.");}
+            }
+        }
         while (true) {
-            System.out.print("Enter Role (Customer/Seller): ");
+            System.out.print("Enter Role (Customer/Seller/C/S) non case sensative: ");
             role = scanner.nextLine().trim();
-            if (role.equalsIgnoreCase("Customer") || role.equalsIgnoreCase("Seller")) {
+            if (role.equalsIgnoreCase("Customer")||role.equalsIgnoreCase("C")||role.equalsIgnoreCase("S")||role.equalsIgnoreCase("Seller")) {
                 break;
             } else {
                 System.out.println("Invalid role. Please enter 'Customer' or 'Seller'.");
             }
         }
-        System.out.print("Enter Contact: ");
-        String contact = scanner.nextLine();
-        System.out.print("Enter Address: ");
-        String address = scanner.nextLine();
-
-        String userIDPrefix = role.equalsIgnoreCase("Customer") ? "C" : "S";
+        while(true) {
+            System.out.print("Enter Contact No: ");
+            contact = scanner.nextLine();
+            if (contact.matches("\\d{8}")) {
+                break;
+            }
+            System.out.println("Contact must be 8 digits.");
+        }
+        while(true) {
+            System.out.print("Enter Address: ");
+            address = scanner.nextLine();
+            if(!address.isEmpty()) {break;}
+            System.out.println("Invalid Address format. Please try again.");
+        }
+        String userIDPrefix = (role.equalsIgnoreCase("Customer")||role.equalsIgnoreCase("C"))?"C":"S";
         String userID = userIDPrefix + System.currentTimeMillis();
         String defaultPassword = generateRandomPassword();
         System.out.println("[Simulated Email] Your default password is: " + defaultPassword);
 
         User newUser;
-        if (role.equalsIgnoreCase("Customer")) {
+        if (role.equalsIgnoreCase("Customer")||role.equalsIgnoreCase("C")) {
             newUser = new Customer(userID, name, email, defaultPassword, contact, address, true);
-        } else if (role.equalsIgnoreCase("Seller")) {
+        } else if (role.equalsIgnoreCase("Seller")||role.equalsIgnoreCase("S")) {
             newUser = new Seller(userID, name, email, defaultPassword, contact, address, true);
         } else {
             System.out.println("Invalid role. Registration failed.");
@@ -150,6 +225,15 @@ public class Administrator extends User {
         CSVExporter.appendUserToCSV(newUser, "src/data/users.csv");
         System.out.println("Registration successful! Please log in using email and default password.");
     }
+    public static boolean validEmail(String email,List<User> users) {
+        for (User user : users) {
+            if (user.getEmail().equalsIgnoreCase(email)) {
+                System.out.println("This email is already registered.");
+                return false;
+            }
+        }
+        return true;
+    }
 
     public static String generateRandomPassword() {
         return "PW" + (int) (Math.random() * 10000);
@@ -159,7 +243,6 @@ public class Administrator extends User {
         System.out.println("Administrator Profile:");
         System.out.println("Name: " + name);
         System.out.println("Email: " + email);
-        // Additional admin-specific details if needed
     }
 
     public static boolean isValidAndUniqueUserID(String userID, List<User> users) {
@@ -239,7 +322,7 @@ public class Administrator extends User {
             try {
                 System.out.print("Enter discount percentage (e.g. 10 without percent sign): ");
                 discountPercent = Double.parseDouble(scanner.nextLine());
-                if (discountPercent > 0 || discountPercent < 100) {
+                if (discountPercent > 0 && discountPercent < 100) {
                     System.out.println("Discount must be between 0 and 100.");
                     break;
                 }
@@ -295,7 +378,7 @@ public class Administrator extends User {
             try {
                 System.out.print("Enter discount percentage (e.g. 10 without percent sign): ");
                 discountPercent = Double.parseDouble(scanner.nextLine());
-                if (discountPercent > 0 || discountPercent < 100) {
+                if (discountPercent > 0 && discountPercent < 100) {
                     System.out.println("Discount must be between 0 and 100.");
                     break;
                 }
@@ -322,6 +405,9 @@ public class Administrator extends User {
         CSVExporter.updateProducts(target, "src/data/products.csv");
 
         System.out.println("Discount applied to " + productId);
+        System.out.println("Summary:");
+        System.out.println("Discount: " + discountPercent + "%");
+        System.out.println("Expiry: " + expiryDate);
     }
 
 

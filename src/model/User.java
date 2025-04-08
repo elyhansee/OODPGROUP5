@@ -56,4 +56,24 @@ public abstract class User {
 
     // Each subclass may override a method to display their menu
     public abstract void displayMenu();
+
+    protected void setUserID(String newValue) {
+        userID = newValue;
+    }
+
+    protected void setName(String newValue) {
+        name = newValue;
+    }
+
+    protected void setEmail(String newValue) {
+        email = newValue;
+    }
+
+    protected void setContact(String newValue) {
+        contact = newValue;
+    }
+
+    protected void setAddress(String newValue) {
+        address = newValue;
+    }
 }
