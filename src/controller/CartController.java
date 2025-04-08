@@ -27,7 +27,7 @@ public class CartController {
         }
     }
 
-    public void addToCart(ProductController productController) {
+    public void addToCart(ProductController productController, CustomerController customerController) {
         String prod_ID = view.addToCart();
         if (prod_ID.equalsIgnoreCase("cancel") || prod_ID.isEmpty()) {
             return;
@@ -46,6 +46,9 @@ public class CartController {
                     if (confirmation.equalsIgnoreCase("y")) {
                         this.addItem(findProduct, prod_qty);
                         System.out.println("ADDED TO CART");
+
+                        Recommendations.displayRecommendations(prod_ID, productController.getActiveProducts(), productController, customerController);
+
                         break;
                     } else if (confirmation.equalsIgnoreCase("n")) {
                         System.out.println("Cancelled");

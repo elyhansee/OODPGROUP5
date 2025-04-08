@@ -102,7 +102,6 @@ public class SellerController {
 
             Product newProduct = new Product("P" + System.currentTimeMillis(), name, description, price, stock, this.seller.getUserID(), "False"); // Added default false 020425 Dehan
             productController.addProduct(newProduct);
-            productController.sellerNewProduct(newProduct);
         } catch (Exception e) {
             System.out.println("An unexpected error has occurred. Please try again.");
         }
