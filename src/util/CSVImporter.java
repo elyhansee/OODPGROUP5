@@ -1,6 +1,7 @@
 package util;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,25 +52,26 @@ public class CSVImporter {
                 }
             }
         }
-
-        // Leaving it as general exception catching for now - Dehan 29/3
-        catch (Exception e) {
-            e.printStackTrace();
+        catch (FileNotFoundException e) {
+            System.out.println("The file " + filePath + " was not found.");
         }
-
+        catch (IOException e) {
+            System.out.println("Unable to load Users CSV.");
+        }
+        catch (Exception e) {
+            System.out.println("An unexpected error has occurred.");
+        }
         finally {
-            try {
-                reader.close();
-            } 
-            catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            if (reader != null) {
+                try {
+                    reader.close();
+                } 
+                catch (IOException e) {
+                    System.out.println("Error closing reader.");
+                }
             }
         }
 
-        // users.add(new Customer("C001", "Alice", "alice@example.com", "password", "12345678", "123 Street"));
-        // users.add(new Seller("S001", "Bob", "bob@example.com", "password", "87654321", "456 Avenue"));
-        // users.add(new Administrator("A001", "Charlie", "charlie@example.com", "password", "11223344", "789 Boulevard"));
         return users;
     }
 
@@ -85,15 +87,14 @@ public class CSVImporter {
             while ((line = reader.readLine()) != null) {
                 String[] readData = line.split(",");
 
-                if (readData.length >= 11) { // 6 is the number of parameters needed
+                if (readData.length >= 11) {
                     String productID = readData[0];
                     String name = readData[1];
                     String description = readData[2];
                     double price = Double.parseDouble(readData[3]);
                     int stock = Integer.parseInt(readData[4]);
                     String sellerID = readData[5];
-                    //boolean firstLogin = readData[6].equals("1");
-                    String active = readData[6];//.equals("True");
+                    String active = readData[6];
                     double discount = Double.parseDouble(readData[7]);
                     String expiry = readData.length > 8 ? readData[8] : "";
                     double minPrice = Double.parseDouble(readData[9]);
@@ -108,27 +109,28 @@ public class CSVImporter {
             }
         }
 
-        // Leaving it as general exception catching for now - Dehan 29/3
-        catch (Exception e) {
-            e.printStackTrace();
+        catch (FileNotFoundException e) {
+            System.out.println("The file " + filePath + " was not found.");
         }
-
+        catch (IOException e) {
+            System.out.println("Unable to load Products CSV.");
+        }
+        catch (Exception e) {
+            System.out.println("An unexpected error has occurred.");
+        }
         finally {
-            try {
-                reader.close();
-            } 
-            catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            if (reader != null) {
+                try {
+                    reader.close();
+                } 
+                catch (IOException e) {
+                    System.out.println("Error closing reader.");
+                }
             }
         }
-
-        // products.add(new Product("P001", "Keyboard", "Mechanical keyboard", 79.99, 50, "S001"));
-        // products.add(new Product("P002", "Mouse", "Wireless mouse", 39.99, 100, "S001"));
         return products;
     }
 
-    // TO BE UPDATED 30/3 ===================================================================================================================
     public static List<Order> importOrders(String filePath) {
         List<Order> orders = new ArrayList<>();
 
@@ -141,8 +143,7 @@ public class CSVImporter {
             while ((line = reader.readLine()) != null) {
                 String[] readData = line.split(",");
 
-                //TODO: Update after esther done with checkout part
-                if (readData.length == 9) { // 3 is the number of parameters needed
+                if (readData.length >= 9) {
                     String customerID = readData[0];
                     String orderID = readData[1];
                     String productName = readData[2];
@@ -159,22 +160,25 @@ public class CSVImporter {
                         orders.add(newOrder);
                     }
                 }
-                //TODO: Probably add an ELSE statement if values are missing. Can do for the others too
             }
         }
-
-        // Leaving it as general exception catching for now - Dehan 29/3
-        catch (Exception e) {
-            e.printStackTrace();
+        catch (FileNotFoundException e) {
+            System.out.println("The file " + filePath + " was not found.");
         }
-
+        catch (IOException e) {
+            System.out.println("Unable to load Orders CSV.");
+        }
+        catch (Exception e) {
+            System.out.println("An unexpected error has occurred.");
+        }
         finally {
-            try {
-                reader.close();
-            } 
-            catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            if (reader != null) {
+                try {
+                    reader.close();
+                } 
+                catch (IOException e) {
+                    System.out.println("Error closing reader.");
+                }
             }
         }
 
@@ -182,7 +186,7 @@ public class CSVImporter {
     }
 
     // To get bundles
-    public static List<String> importBundles(String filePath) { // PLACEHOLDER
+    public static List<String> importBundles(String filePath) {
         List<String> bundles = new ArrayList<>();
 
         BufferedReader reader = null;
@@ -195,19 +199,25 @@ public class CSVImporter {
                 bundles.add(line);
             }
         }
+        catch (FileNotFoundException e) {
+            System.out.println("The file " + filePath + " was not found.");
+        }
+        catch (IOException e) {
+            System.out.println("Unable to load Bundles CSV.");
+        }
         catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("An unexpected error has occurred.");
         }
         finally {
-            try {
-                reader.close();
-            } 
-            catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            if (reader != null) {
+                try {
+                    reader.close();
+                } 
+                catch (IOException e) {
+                    System.out.println("Error closing reader.");
+                }
             }
         }
-
         return bundles;
     }
 }

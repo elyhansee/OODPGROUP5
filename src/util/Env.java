@@ -14,6 +14,8 @@ public class Env {
             fis.close();
         } catch (IOException e) {
             System.err.println("Could not load .env file: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An unexpected error has occurred.");
         }
     }
 

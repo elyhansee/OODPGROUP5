@@ -6,6 +6,7 @@ import model.Product;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,8 +24,15 @@ public class CSVExporter {
                     .append(user.getContact()).append(",")
                     .append(user.getAddress()).append(",")
                     .append(user.isFirstLogin() ? "1" : "0").append("\n");
-        } catch (IOException e) {
+        } 
+        catch (FileNotFoundException e) {
+            System.out.println("The file " + filePath + " was not found.");
+        }
+        catch (IOException e) {
             System.out.println("Error writing to users.csv: " + e.getMessage());
+        }
+        catch (Exception e) {
+            System.out.println("An unexpected error has occurred.");
         }
     }
 
@@ -54,8 +62,15 @@ public class CSVExporter {
             writer.close();
 
             System.out.println("Password updated for user ID: " + userId);
-        } catch (IOException e) {
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("The file " + filePath + " was not found.");
+        }
+        catch (IOException e) {
             System.out.println("Error updating password: " + e.getMessage());
+        }
+        catch (Exception e) {
+            System.out.println("An unexpected error has occurred.");
         }
     }
 
@@ -103,8 +118,15 @@ public class CSVExporter {
             writer.close();
 
             System.out.println("User field updated successfully.");
-        } catch (IOException e) {
+        } 
+        catch (FileNotFoundException e) {
+            System.out.println("The file " + filePath + " was not found.");
+        }
+        catch (IOException e) {
             System.out.println("Error updating user field: " + e.getMessage());
+        }
+        catch (Exception e) {
+            System.out.println("An unexpected error has occurred.");
         }
     }
 
@@ -148,8 +170,15 @@ public class CSVExporter {
             writer.close();
 
             System.out.println("\nVisibility Updated Successfully for Product " + product.getProductID() + "\n");
-        } catch (IOException e) {
+        } 
+        catch (FileNotFoundException e) {
+            System.out.println("The file " + filePath + " was not found.");
+        }
+        catch (IOException e) {
             System.out.println("Error updating visibility: " + e.getMessage());
+        }
+        catch (Exception e) {
+            System.out.println("An unexpected error has occurred.");
         }
     }
 
@@ -173,8 +202,15 @@ public class CSVExporter {
             writer.close();
 
             System.out.println("Product Successfully Added!");
-        } catch (IOException e) {
+        } 
+        catch (FileNotFoundException e) {
+            System.out.println("The file " + filePath + " was not found.");
+        }
+        catch (IOException e) {
             e.printStackTrace();
+        }
+        catch (Exception e) {
+            System.out.println("An unexpected error has occurred.");
         }
     }
 
@@ -182,8 +218,15 @@ public class CSVExporter {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             writer.write(String.join(",", bundle));
             writer.newLine();
-        } catch (IOException e) {
+        } 
+        catch (FileNotFoundException e) {
+            System.out.println("The file " + filePath + " was not found.");
+        }
+        catch (IOException e) {
             System.out.println("Error writing bundle: " + e.getMessage());
+        }
+        catch (Exception e) {
+            System.out.println("An unexpected error has occurred.");
         }
     }
 
@@ -201,10 +244,16 @@ public class CSVExporter {
                     .append(order.getSellerID()).append(",")
                     .append(Double.toString(order.getCost())).append("\n");
             writer.close();
-        } catch (IOException e) {
+        } 
+        catch (FileNotFoundException e) {
+            System.out.println("File not found.");
+        }
+        catch (IOException e) {
             System.out.println(e.getMessage());
         }
-
+        catch (Exception e) {
+            System.out.println("An unexpected error has occurred.");
+        }
     }
 
     public static void updateOrder(Order order) {
@@ -240,9 +289,15 @@ public class CSVExporter {
             }
             writer.close();
 
-        } catch (IOException e) {
+        } 
+        catch (FileNotFoundException e) {
+            System.out.println("File not found.");
+        }
+        catch (IOException e) {
             System.out.println(e.getMessage());
         }
+        catch (Exception e) {
+            System.out.println("An unexpected error has occurred.");
+        }
     }
-
 }
