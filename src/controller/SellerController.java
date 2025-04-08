@@ -8,6 +8,7 @@ import util.CSVExporter;
 import view.SellerView;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -225,18 +226,26 @@ public class SellerController {
     private void generateSalesReport(Scanner scanner) {
         try {
             List<Order> orders = orderController.getSellerOrders(seller.getUserID());
-            List<Product> products = productController.getStoreProducts(seller.getUserID());
+
             if (orders.isEmpty()) {
                 System.out.println();
                 System.out.println("== Your Sales Report ==");
                 System.out.println("No one has ordered your products yet.");
+                exitMenu();
                 return;
             }
 
-            System.out.println("Enter the start date <yyyy-mm-dd> (inclusive):");
+            System.out.println("Enter the start date <yyyy-mm-dd> (inclusive) [Press Enter for Today]:");
             String startDate = scanner.nextLine();
-            System.out.println("Enter the end date <yyyy-mm-dd> (inclusive):");
+            if (startDate.isEmpty()) {
+                startDate = LocalDate.now().toString();
+            }
+
+            System.out.println("Enter the end date <yyyy-mm-dd> (inclusive) [Press Enter for Today]:");
             String endDate = scanner.nextLine();
+            if (endDate.isEmpty()) {
+                endDate = LocalDate.now().toString();
+            }
 
             orders = orderController.sortOrderByDate(orders, startDate, endDate);
 
@@ -244,6 +253,7 @@ public class SellerController {
                 System.out.println();
                 System.out.println("== Your Sales Report ==");
                 System.out.println("No one has ordered your products within the specified time.");
+                exitMenu();
                 return;
             }
 
@@ -277,16 +287,8 @@ public class SellerController {
 
             // Calcualates total revenue
             double totalRevenue = 0;
-            for (Map.Entry<String, Integer> entry : salesHash.entrySet()) {
-                String product = entry.getKey();
-                int count = entry.getValue();
-
-                for (Product p : products) {
-                    if (p.getName().equals(product)) {
-                        totalRevenue += p.getPrice() * count;
-                        break;
-                    }
-                }
+            for (Order o : orders) {
+                    totalRevenue += o.getCost();
             }
 
             System.out.println();
@@ -324,12 +326,6 @@ public class SellerController {
 
             productController.sellerWrite(target);
         }
-    }
-
-    // Used by: toggleListings,
-    private int editMenu(List<String> options) {
-        options.add("Back");
-        return Menu.selection(options);
     }
 
     private void exitMenu() {
