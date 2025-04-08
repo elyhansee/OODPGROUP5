@@ -62,7 +62,7 @@ public class CartController {
         }
     }
 
-    public void checkout(Customer customer, OrderController orderController) {
+    public void checkout(Customer customer, OrderController orderController, ProductController productController) {
         if (shoppingCart.isEmpty()) {
             System.out.println("Your cart is empty.");
             return;
@@ -81,7 +81,9 @@ public class CartController {
         String orderID = Long.toString(System.currentTimeMillis());
         for (CartItem item : shoppingCart) {
             orderController.newOrder(item, customer, orderID, purchaseDate, shipAddr, shipOption);
-            System.out.println("UPDATEING PRICE");
+            item.getProduct().incrementSales();
+            item.getProduct().applyDynamicPricing();
+            productController.decreaseStock(item.getProduct(), item.getQuantity());
             CSVExporter.updateProducts(item.getProduct(), "src/data/products.csv"); // Save updated price
         }
         // Generate order ID and clear cart (stub)

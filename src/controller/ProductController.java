@@ -70,6 +70,16 @@ public class ProductController {
         return sortedProducts;
     }
 
+    public void decreaseStock(Product product, int quantity) {
+        Product findProduct = StoreProducts.stream()
+                .filter(p -> p.getProductID().equals(product.getProductID()))
+                .findFirst().orElse(null);
+        if (findProduct != null) {
+            findProduct.setStock(findProduct.getStock() - quantity);
+        }
+//        CSVExporter.updateProducts(findProduct, filePath);
+    }
+
     //    SELLER METHODS
     //Add product to catalogue during runtime
     public void addProduct(Product product) {

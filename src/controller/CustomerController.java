@@ -33,7 +33,7 @@ public class CustomerController {
                 case 2 -> showProducts();
                 case 3 -> productController.productSearch();
                 case 4 -> cartController.displayCart();
-                case 5 -> cartController.checkout(customer, orderController);
+                case 5 -> cartController.checkout(customer, orderController, productController);
                 case 6 -> showOrders();
                 case 7 -> showPastOrders();
                 case 8 -> System.out.println("Logging out...");
