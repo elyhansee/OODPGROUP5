@@ -15,7 +15,7 @@ public class ProductController {
     private final List<Product> StoreProducts;
     private final ProductView view;
     private static final String filePath = Env.get("DATA_DIR") + "/products.csv";
-    private static final String bundleFilePath = Env.get("DATA_DIR") + "/bundles.csv"; //PLACEHOLDER 050425
+    private static final String bundleFilePath = Env.get("DATA_DIR") + "/bundles.csv";
 
     public ProductController(List<Product> storeProducts, ProductView view) {
         this.StoreProducts = storeProducts;
@@ -57,12 +57,12 @@ public class ProductController {
                 .findFirst();
     }
 
-    public List<String> getBundles() { //PLACEHOLDER 050425
+    public List<String> getBundles() {
         List<String> bundles = CSVImporter.importBundles(bundleFilePath);
         return bundles;
     }
 
-    public Product sortProductsReco(String id) { //PLACEHOLDER 050425
+    public Product sortProductsReco(String id) {
         Product sortedProducts = StoreProducts.stream()
                 .filter(products -> (products.getProductID().equals(id)))
                 .findFirst()

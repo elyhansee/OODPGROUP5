@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Recommendations {
 
-    public static void displayRecommendations(String currentProductID, List<Product> product, ProductController productController, CustomerController customerController) { // PLACEHOLDER
+    public static void displayRecommendations(String currentProductID, List<Product> product, ProductController productController, CustomerController customerController) {
         Scanner scanner = new Scanner(System.in);
         List<String> bundles = productController.getBundles();
         List<Product> recommandedProducts = new ArrayList<>();
