@@ -15,7 +15,7 @@ public class ProductController {
     private final List<Product> StoreProducts;
     private final ProductView view;
     private static final String filePath = Env.get("DATA_DIR") + "/products.csv";
-    private static final String bundleFilePath = ".\\data\\bundles.csv"; //PLACEHOLDER 050425
+    private static final String bundleFilePath = Env.get("DATA_DIR") + "/bundles.csv"; //PLACEHOLDER 050425
 
     public ProductController(List<Product> storeProducts, ProductView view) {
         this.StoreProducts = storeProducts;

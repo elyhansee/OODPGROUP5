@@ -1,7 +1,8 @@
-P001,Keyboard,Computer Equipment,96.0,60,S001,True,10.0,2025-04-16,80.0,110.0
-P002,Mouse,Computer Equipment,34.991,100,S002,True,10.0,2025-04-16,30.0,40.0
-P003,Headphones,Audio Equipment,44.991,20,S001,False,10.0,2025-04-16,40,45
-P004,Adapter,Computer Equipment,35.9928,20,S001,False,20.0,2025-07-05,30,40
-P1743619741083,TESt,tetsets,82.8,1,S001,True,10.0,2025-04-16,80,90
-P1743619776929,Test2,Testing Stock Validation,44.991,0,S001,True,10.0,2025-04-16,40,50
-P1743785878789,test 4,New Desc,90.0,3,S001,False,10.0,2025-04-16,80,95
+P001,Keyboard,Computer Equipment,85.5,50,S001,True,10.0,2025-04-14,80.0,110.0
+P002,Mouse,Computer Equipment,30.5919,90,S002,True,10.0,2025-04-14,30.0,40.0
+P003,Headphones,Audio Equipment,40.4919,20,S001,False,10.0,2025-04-14,40.0,45.0
+P004,Adapter,Computer Equipment,32.39352,20,S001,False,10.0,2025-04-14,30.0,40.0
+P1743619741083,TESt,tetsets,74.52,1,S001,True,10.0,2025-04-14,80.0,90.0
+P1743619776929,Test2,Testing Stock Validation,40.4919,0,S001,True,10.0,2025-04-14,40.0,50.0
+P1743785878789,test 4,New Desc,81.0,3,S001,False,10.0,2025-04-14,80.0,95.0
+P1744103617053,Webcam,wish camera,0.0,900,S001,False,100.0,2025-07-05,4.0,15.0

@@ -9,7 +9,7 @@ import java.util.*;
 public class Recommendations {
 
     public static void displayRecommendations(String currentProductID, List<Product> product, ProductController productController, CustomerController customerController) { // PLACEHOLDER
-
+        Scanner scanner = new Scanner(System.in);
         List<String> bundles = productController.getBundles();
         List<Product> recommandedProducts = new ArrayList<>();
 
@@ -34,11 +34,9 @@ public class Recommendations {
             for (Product p : recommandedProducts) {
                 System.out.println(p.toString());
             }
-            
-            customerController.invokeHandleCustomerActions();
 
-        } 
-        else {
+            customerController.invokeHandleCustomerActions();
+        } else {
             return; // No Recommanded Products
         }
     }
