@@ -239,7 +239,10 @@ public class Administrator extends User {
             try {
                 System.out.print("Enter discount percentage (e.g. 10 without percent sign): ");
                 discountPercent = Double.parseDouble(scanner.nextLine());
-                break;
+                if (discountPercent > 0 || discountPercent < 100) {
+                    System.out.println("Discount must be between 0 and 100.");
+                    break;
+                }
             } catch (Exception e) {
                 System.out.println("You did not input an integer try again.");
             }
@@ -247,8 +250,9 @@ public class Administrator extends User {
         while (true) {
             try {
                 System.out.print("Enter number of days (campaign duration): ");
-                days = Integer.parseInt(scanner.nextLine()); // For future use/logging
-                break;
+                days = Integer.parseInt(scanner.nextLine());
+                if (days >= 0) {break;}
+                else{System.out.println("Invalid days.");}
             } catch (Exception e) {
                 System.out.println("You did not input an integer try again.");
             }
@@ -285,11 +289,30 @@ public class Administrator extends User {
             System.out.println("Product not found.");
             return;
         }
-
-        System.out.print("Enter discount percentage: ");
-        double discountPercent = Double.parseDouble(scanner.nextLine());
-        System.out.print("Enter number of days for discount: ");
-        int days = Integer.parseInt(scanner.nextLine());
+        double discountPercent;
+        int days;
+        while (true) {
+            try {
+                System.out.print("Enter discount percentage (e.g. 10 without percent sign): ");
+                discountPercent = Double.parseDouble(scanner.nextLine());
+                if (discountPercent > 0 || discountPercent < 100) {
+                    System.out.println("Discount must be between 0 and 100.");
+                    break;
+                }
+            } catch (Exception e) {
+                System.out.println("You did not input an integer try again.");
+            }
+        }
+        while (true) {
+            try {
+                System.out.print("Enter number of days (campaign duration): ");
+                days = Integer.parseInt(scanner.nextLine());
+                if (days >= 0) {break;}
+                else{System.out.println("Invalid days.");}
+            } catch (Exception e) {
+                System.out.println("You did not input an integer try again.");
+            }
+        }
 
         LocalDate expiryDate = LocalDate.now().plusDays(days);
 
