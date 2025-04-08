@@ -409,6 +409,4 @@ public class Administrator extends User {
         System.out.println("Discount: " + discountPercent + "%");
         System.out.println("Expiry: " + expiryDate);
     }
-
-
 }

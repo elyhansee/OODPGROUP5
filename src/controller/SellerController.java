@@ -182,39 +182,32 @@ public class SellerController {
     }
 
     private void setMinMaxPrice(Scanner scanner) {
-//        System.out.println("All your products:");
-//        for (Product p : products) {
-//            if (p.getSellerID().equals(this.seller.getUserID())) {
-//                System.out.println(p);
-//            }
-//        }
         List<Product> products = productController.getStoreProducts(this.seller.getUserID());
         productController.listProducts(products);
 
         // Set Minimum Price
         System.out.print("Enter the Product ID to set a Minimum Price: ");
-        String productIdMin = scanner.nextLine();
-        Product minProduct = products.stream().filter(p -> p.getProductID().equals(productIdMin)).findAny().orElse(null); //findMyProductById(products, productIdMin);
+        String productId = scanner.nextLine();
+        Product minProduct = products.stream().filter(p -> p.getProductID().equals(productId)).findAny().orElse(null); //findMyProductById(products, productIdMin);
         if (minProduct != null) {
             System.out.print("Enter the new minimum price: ");
             double minPrice = Double.parseDouble(scanner.nextLine());
-            minProduct.setMinPrice(minPrice);
+            if (minPrice > minProduct.getPrice()){System.out.println("Minimum price cannot be higher than original price (" + minProduct.getPrice() + ").");}
+            else{minProduct.setMinPrice(minPrice);
             productController.sellerWrite(minProduct);
-            System.out.println("Minimum price set successfully.");
+            System.out.println("Minimum price set successfully.");}
         } else {
             System.out.println("Product not found or unauthorized.");
         }
 
-        // Set Maximum Price
-        System.out.print("Enter the Product ID to set a Maximum Price: ");
-        String productIdMax = scanner.nextLine();
-        Product maxProduct = findMyProductById(products, productIdMax);
+        Product maxProduct = findMyProductById(products, productId);
         if (maxProduct != null) {
             System.out.print("Enter the new maximum price: ");
             double maxPrice = Double.parseDouble(scanner.nextLine());
-            maxProduct.setMaxPrice(maxPrice);
+            if (maxPrice < maxProduct.getPrice()) {System.out.println("Maximum price cannot be lower than original price (" + maxProduct.getPrice() + ").");}
+            else{maxProduct.setMaxPrice(maxPrice);
             productController.sellerWrite(maxProduct);
-            System.out.println("Maximum price set successfully.");
+            System.out.println("Maximum price set successfully.");}
         } else {
             System.out.println("Product not found or unauthorized.");
         }
@@ -344,48 +337,47 @@ public class SellerController {
     }
 
     public void setBundledItems(Scanner scanner) {
-        List<Product> products = productController.getStoreProducts(seller.getUserID());
-        List<String> productIds = products.stream().map(Product::getProductID).toList();
+        List<Product> products=productController.getStoreProducts(seller.getUserID());
+        List<String> productIds=products.stream().map(Product::getProductID).toList();
         view.displaySellerProducts(products);
-//        for (Product p : products) {
-//            if (p.getSellerID().equals(this.seller.getUserID())) {
-//                System.out.println(p.toStringSeller());
-//                productIds.add(p.getProductID());
-//            }
-//        }
 
         System.out.print("Enter Product ID to set recommendations for: ");
-        String baseProductId = scanner.nextLine();
+        String baseProductId=scanner.nextLine().trim();
 
-        Product baseProduct = findMyProductById(products, baseProductId);
-        if (baseProduct == null) {
+        Product baseProduct=findMyProductById(products, baseProductId);
+        if(baseProduct==null) {
             System.out.println("Invalid product ID.");
             return;
         }
 
-        List<String> bundle = new ArrayList<>();
+        List<String> bundle=new ArrayList<>();
         bundle.add(baseProductId);
 
-        while (true) {
+        while(true){
             System.out.print("Enter related Product ID to add (or 'done' to finish): ");
-            String relatedId = scanner.nextLine();
+            String relatedId=scanner.nextLine().trim();
+
             if (relatedId.equalsIgnoreCase("done")) break;
 
-            if (!relatedId.equals(baseProductId) && productIds.contains(relatedId)) {
-                bundle.add(relatedId);
+            if (relatedId.equals(baseProductId)) {
+                System.out.println("You cannot bundle the product with itself.");
+            } else if (!productIds.contains(relatedId)) {
+                System.out.println("That Product ID doesn't exist in your listings.");
+            } else if (bundle.contains(relatedId)) {
+                System.out.println("This product is already in the bundle.");
             } else {
-                System.out.println("Invalid ID or duplicate.");
+                bundle.add(relatedId);
+                System.out.println("Product added: " + relatedId);
             }
         }
 
-        if (bundle.size() > 1) {
-            CSVExporter.appendBundle(bundle, ".\\data\\bundles.csv"); // Or Env.get("DATA_DIR")
+        if (bundle.size()>1) {
+            CSVExporter.appendBundle(bundle, "./data/bundles.csv");
             System.out.println("Bundled recommendation saved.");
         } else {
             System.out.println("Bundle must include at least one additional product.");
         }
     }
-
 
     private void handleSellerActions() {
         List<String> options = List.of("Update Order Status", "Back");
