@@ -46,8 +46,9 @@ public class ProductController {
     private List<Product> searchProducts(String keyword) {
         String lowered = keyword.toLowerCase();
         return StoreProducts.stream()
-                .filter(p -> p.getName().toLowerCase().contains(lowered)
+                .filter(p -> (p.getName().toLowerCase().contains(lowered)
                         || p.getDescription().toLowerCase().contains(lowered))
+                        && p.isActive().equals("True"))
                 .collect(Collectors.toList());
     }
 
