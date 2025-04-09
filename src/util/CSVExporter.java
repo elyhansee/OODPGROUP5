@@ -169,7 +169,7 @@ public class CSVExporter {
             }
             writer.close();
 
-            System.out.println("\nVisibility Updated Successfully for Product " + product.getProductID() + "\n");
+            System.out.println("\nProduct Updated Successfully for Product " + product.getProductID() + "\n");
         } 
         catch (FileNotFoundException e) {
             System.out.println("The file " + filePath + " was not found.");

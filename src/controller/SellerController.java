@@ -191,24 +191,40 @@ public class SellerController {
         String productId = scanner.nextLine();
         Product minProduct = products.stream().filter(p -> p.getProductID().equals(productId)).findAny().orElse(null); //findMyProductById(products, productIdMin);
         if (minProduct != null) {
-            System.out.print("Enter the new minimum price: ");
-            double minPrice = Double.parseDouble(scanner.nextLine());
-            if (minPrice > minProduct.getPrice()){System.out.println("Minimum price cannot be higher than original price (" + minProduct.getPrice() + ").");}
-            else{minProduct.setMinPrice(minPrice);
-            productController.sellerWrite(minProduct);
-            System.out.println("Minimum price set successfully.");}
+            double minPrice = -1;
+            while(minPrice > minProduct.getPrice() || minPrice <= 0) {
+                try {
+                    System.out.print("Enter the new minimum price: ");
+                    minPrice = Double.parseDouble(scanner.nextLine());
+                    if (minPrice > minProduct.getPrice()){System.out.println("Minimum price cannot be higher than original price (" + minProduct.getPrice() + ").");}
+                    else{minProduct.setMinPrice(minPrice);
+                    productController.sellerWrite(minProduct);
+                    System.out.println("Minimum price set successfully.");}
+                }
+                catch (NumberFormatException e) {
+                    System.out.println("Invalid price entered. Please try again.");
+                }
+            }
         } else {
             System.out.println("Product not found or unauthorized.");
         }
 
         Product maxProduct = findMyProductById(products, productId);
         if (maxProduct != null) {
-            System.out.print("Enter the new maximum price: ");
-            double maxPrice = Double.parseDouble(scanner.nextLine());
-            if (maxPrice < maxProduct.getPrice()) {System.out.println("Maximum price cannot be lower than original price (" + maxProduct.getPrice() + ").");}
-            else{maxProduct.setMaxPrice(maxPrice);
-            productController.sellerWrite(maxProduct);
-            System.out.println("Maximum price set successfully.");}
+            double maxPrice = -1;
+            while(maxPrice < maxProduct.getPrice() || maxPrice <= 0) {
+                try {
+                    System.out.print("Enter the new maximum price: ");
+                    maxPrice = Double.parseDouble(scanner.nextLine());
+                    if (maxPrice < maxProduct.getPrice()) {System.out.println("Maximum price cannot be lower than original price (" + maxProduct.getPrice() + ").");}
+                    else{maxProduct.setMaxPrice(maxPrice);
+                    productController.sellerWrite(maxProduct);
+                    System.out.println("Maximum price set successfully.");}
+                }
+                catch (NumberFormatException e) {
+                    System.out.println("Invalid price entered. Please try again.");
+                }
+            }
         } else {
             System.out.println("Product not found or unauthorized.");
         }
