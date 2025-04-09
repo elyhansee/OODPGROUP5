@@ -28,7 +28,7 @@ public class SellerController {
     public void run(Scanner scanner) {
         int choice = -1;
         while (choice != 9) {
-            view.displaySellerMenu();
+            seller.displayMenu();
             choice = view.getSellerMenuChoice();
             switch (choice) {
                 case 1 -> view.viewSellerProfile(seller);

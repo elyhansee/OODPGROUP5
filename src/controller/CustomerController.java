@@ -26,7 +26,7 @@ public class CustomerController {
     public void run() {
         int choice = -1;
         while (choice != 8) {
-            view.displayMenu();
+            customer.displayMenu();
             choice = view.getUserMenuChoice();
             switch (choice) {
                 case 1 -> view.displayProfile(customer);
