@@ -5,6 +5,7 @@ import model.Order;
 import model.Product;
 import model.Seller;
 import util.CSVExporter;
+import util.Env;
 import view.SellerView;
 
 import java.text.DecimalFormat;
@@ -384,7 +385,8 @@ public class SellerController {
         }
 
         if (bundle.size()>1) {
-            CSVExporter.appendBundle(bundle, "./data/bundles.csv");
+//            CSVExporter.appendBundle(bundle, "./data/bundles.csv");
+            CSVExporter.appendBundle(bundle, Env.get("DATA_DIR") + "/bundles.csv");
             System.out.println("Bundled recommendation saved.");
         } else {
             System.out.println("Bundle must include at least one additional product.");

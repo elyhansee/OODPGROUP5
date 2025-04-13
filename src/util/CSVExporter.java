@@ -216,8 +216,7 @@ public class CSVExporter {
 
     public static void appendBundle(List<String> bundle, String filePath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            writer.write(String.join(",", bundle));
-            writer.newLine();
+            writer.append(String.join(",", bundle)).append("\n");
         } 
         catch (FileNotFoundException e) {
             System.out.println("The file " + filePath + " was not found.");

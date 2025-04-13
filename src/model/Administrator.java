@@ -284,7 +284,7 @@ public class Administrator extends User {
             else if (shipping.contains("local")) localCount++;
 
             String status = order.getStatus().toLowerCase();
-            if (status.contains("shipping")) shippingCount++;
+            if (status.contains("shipped")) shippingCount++;
             else if (status.contains("delivered")) deliveredCount++;
             else if (status.contains("cancel") || status.contains("sinkhole") || status.contains("drowned"))
                 canceledCount++;

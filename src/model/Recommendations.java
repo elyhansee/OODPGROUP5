@@ -17,7 +17,6 @@ public class Recommendations {
         for (String ids : bundles) {
             if (ids.contains(currentProductID)) {
                 bundleIDs = ids;
-                break;
             }
         }
 
@@ -30,7 +29,7 @@ public class Recommendations {
                 }
             }
 
-            System.out.println("\n== Recommanded Products ==");
+            System.out.println("\n== Recommended Products ==");
             for (Product p : recommandedProducts) {
                 System.out.println(p.toString());
             }

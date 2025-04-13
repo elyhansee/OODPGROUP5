@@ -55,6 +55,7 @@ public class CartController {
                         break;
                     } else {
                         System.out.println("Invalid input");
+                        break;
                     }
                 }
             }
