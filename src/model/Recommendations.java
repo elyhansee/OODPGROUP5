@@ -5,37 +5,51 @@ import controller.ProductController;
 import util.CSVImporter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Recommendations {
 
     public static void displayRecommendations(String currentProductID, List<Product> product, ProductController productController, CustomerController customerController) {
-        Scanner scanner = new Scanner(System.in);
         List<String> bundles = productController.getBundles();
         List<Product> recommandedProducts = new ArrayList<>();
+        Set<String> addedProductIDs = new HashSet<>();
 
-        String bundleIDs = "";
+        List<String> bundleIDs = new ArrayList<>();
         for (String ids : bundles) {
             if (ids.contains(currentProductID)) {
-                bundleIDs = ids;
+                bundleIDs.add(ids);
             }
         }
 
-        if (!bundleIDs.isEmpty()) {
-            List<String> splitIDs = Arrays.asList(bundleIDs.split(","));
+        if (!bundleIDs.isEmpty() && !bundleIDs.equals(null)) {
+            String newBundleIDs = String.join(",", bundleIDs);
+            List<String> splitIDs = Arrays.asList(newBundleIDs.split(","));
 
             for (String id : splitIDs) {
-                if (!id.equals(currentProductID)) {
-                    recommandedProducts.add(productController.sortProductsReco(id));
+                if (!id.equals(currentProductID) && !addedProductIDs.contains(id)) {
+                    Product reco = productController.sortProductsReco(id);
+                    if (reco != null) {
+                        recommandedProducts.add(reco);
+                        addedProductIDs.add(id);
+                    }
                 }
             }
 
-            System.out.println("\n== Recommended Products ==");
-            for (Product p : recommandedProducts) {
-                System.out.println(p.toString());
+            if (!recommandedProducts.isEmpty() && !recommandedProducts.equals(null)) {
+                System.out.println("\n== Recommended Products ==");
+                for (Product p : recommandedProducts) { // help here i dont want it to print out repeat items
+                    System.out.println(p.toString());
+                }
+    
+                customerController.invokeHandleCustomerActions();
+            }
+            else {
+                System.out.println("\n== No Recommended Products ==");
+                return; // No Recommanded Products
             }
 
-            customerController.invokeHandleCustomerActions();
         } else {
+            System.out.println("\n== No Recommended Products ==");
             return; // No Recommanded Products
         }
     }

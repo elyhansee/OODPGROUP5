@@ -65,7 +65,7 @@ public class ProductController {
 
     public Product sortProductsReco(String id) {
         Product sortedProducts = StoreProducts.stream()
-                .filter(products -> (products.getProductID().equals(id)))
+                .filter(products -> (products.getProductID().equals(id) && products.isActive().equals("True")))
                 .findFirst()
                 .orElse(null);
         return sortedProducts;
