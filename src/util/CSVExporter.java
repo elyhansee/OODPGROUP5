@@ -241,7 +241,7 @@ public class CSVExporter {
                     .append(order.getStatus()).append(",")
                     .append((order.getYear() + "-" + order.getMonth() + "-" + order.getDay())).append(",")
                     .append(order.getSellerID()).append(",")
-                    .append(Double.toString(order.getCost())).append("\n");
+                    .append(String.format("%.2f",order.getCost())).append("\n");
             writer.close();
         } 
         catch (FileNotFoundException e) {

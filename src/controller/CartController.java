@@ -106,7 +106,8 @@ public class CartController {
     private void addItem(Product product, int quantity) {
         // In a full implementation, check if the product already exists in the cart.
         String cartItemID = Long.toString(System.currentTimeMillis());
-        shoppingCart.add(new CartItem(cartItemID, product, quantity));
+        CartItem cartItem = new CartItem(cartItemID, product, quantity);
+        shoppingCart.add(cartItem);
     }
 
     //    UPDATE
